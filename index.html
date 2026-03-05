@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="meta-title">Artist</title>
+  <meta name="description" id="meta-description" content="" />
+  <link rel="preconnect" href="https://bandcamp.com" />
+  <link rel="preconnect" href="https://www.youtube.com" />
+  <link rel="dns-prefetch" href="https://i.ytimg.com" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    :root {
+      --text: #8252fe;
+      --accent: #07fae8;
+      --bg: #f40006;
+      --bg-alt: #ee0006;
+      --bg-card: #e80006;
+    }
+    #nav { background: #8252fe; color: #f5f500; }
+    #nav-name, .nav-links li a { color: #f5f500; }
+    .marquee-bar { background: #8252fe; }
+    .marquee-track span { color: #f5f500; }
+  </style>
+</head>
+<body>
+<div id="checker-bg"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="#top" class="nav-logo" id="nav-name">Artist</a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#releases">Releases</a></li>
+        <li><a href="#photos">Photos</a></li>
+        <li><a href="#videos">Videos</a></li>
+        <li><a href="#live">Live</a></li>
+        <li><a href="#imprint">Imprint</a></li>
+        <li><a href="#" id="nav-shop" target="_blank" rel="noopener">Shop ↗</a></li>
+      </ul>
+      <button class="nav-toggle" aria-label="Menu">&#9776;</button>
+    </div>
+  </nav>
+
+  <!-- MARQUEE -->
+  <div class="marquee-bar" style="margin-top:58px">
+    <div class="marquee-track" id="marquee-track">
+      <span id="marquee-name">krachym</span>
+      <span class="sep"> ★ </span>
+      <span>electronic pop symphony</span>
+      <span class="sep"> ★ </span>
+      <span>noise pop</span>
+      <span class="sep"> ★ </span>
+      <span>experimental</span>
+      <span class="sep"> ★ </span>
+      <span>leipzig</span>
+      <span class="sep"> ★ </span>
+      <!-- duplicate for seamless loop -->
+      <span id="marquee-name2">krachym</span>
+      <span class="sep"> ★ </span>
+      <span>electronic pop symphony</span>
+      <span class="sep"> ★ </span>
+      <span>noise pop</span>
+      <span class="sep"> ★ </span>
+      <span>experimental</span>
+      <span class="sep"> ★ </span>
+      <span>leipzig</span>
+      <span class="sep"> ★ </span>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <header id="top" class="hero">
+    <div class="hero-accent-v"></div>
+    <div class="hero-accent-h"></div>
+    <div class="hero-inner">
+      <h1 id="hero-name" data-text="krachym">Artist</h1>
+      <p id="hero-tagline" class="tagline"></p>
+      <div class="social-links" id="social-links"></div>
+    </div>
+    <div class="hero-scroll">scroll</div>
+  </header>
+
+  <!-- ABOUT -->
+  <section id="about" class="section">
+    <div class="container">
+      <h2 class="section-title reveal">About</h2>
+      <div class="about-grid">
+        <div class="about-photo reveal-left">
+          <img id="about-photo" src="" alt="Artist photo" />
+        </div>
+        <div class="about-text reveal-right delay-1">
+          <p id="about-text"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RELEASES -->
+  <section id="releases" class="section section-alt">
+    <div class="container">
+      <h2 class="section-title reveal">Releases</h2>
+      <div class="releases-grid" id="releases-grid"></div>
+    </div>
+  </section>
+
+  <!-- PHOTOS -->
+  <section id="photos" class="section">
+    <div class="container">
+      <h2 class="section-title reveal">Photos</h2>
+      <div class="photos-grid reveal" id="photos-grid"></div>
+      <p class="photo-credit reveal delay-1">Photos by <a href="https://www.instagram.com/phoerrl/" target="_blank" rel="noopener">@phoerrl</a></p>
+    </div>
+  </section>
+
+  <!-- VIDEOS -->
+  <section id="videos" class="section section-alt">
+    <div class="container">
+      <h2 class="section-title reveal">Videos</h2>
+      <div class="videos-grid reveal" id="videos-grid"></div>
+    </div>
+  </section>
+
+  <!-- LIVE -->
+  <section id="live" class="section">
+    <div class="container">
+      <h2 class="section-title reveal">Live</h2>
+      <div class="shows-sub-heading reveal">Upcoming</div>
+      <div id="shows-upcoming" class="shows-list"></div>
+      <div class="shows-sub-heading shows-sub-heading-past reveal">Past</div>
+      <div id="shows-past" class="shows-list shows-list-past"></div>
+      <img src="images/kangaroo.gif" alt="" class="live-kangaroo" aria-hidden="true" />
+    </div>
+  </section>
+
+  <!-- IMPRINT -->
+  <section id="imprint" class="section section-alt">
+    <div class="container imprint-container">
+      <h2 class="section-title reveal">Imprint</h2>
+      <div id="imprint-content" class="reveal"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <p id="footer-name"></p>
+      <div class="social-links" id="footer-social"></div>
+    </div>
+  </footer>
+
+  <!-- FLYING SHAPES -->
+  <div class="flying-shapes" aria-hidden="true">
+    <div class="shape shape-sq"></div>
+    <div class="shape shape-sq2"></div>
+    <div class="shape shape-dia"></div>
+    <div class="shape shape-dot"></div>
+    <div class="shape shape-cross"></div>
+    <img class="shape shape-butterfly" src="https://sengpielaudio.com/ANSchmetterling01.gif" alt="" />
+  </div>
+
+  <!-- DECORATIVE CIRCLES -->
+  <div class="deco-circles" aria-hidden="true">
+    <div class="deco-circle deco-circle-1"></div>
+    <div class="deco-circle deco-circle-2"></div>
+    <div class="deco-circle deco-circle-3"></div>
+    <div class="deco-circle deco-circle-4"></div>
+  </div>
+
+  <!-- COOKIE BANNER -->
+  <div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Cookie notice">
+    <img src="https://www.clker.com/cliparts/e/b/8/f/1206556224553191855molumen_chocolate_chip_cookie.svg" alt="cookie" class="cookie-gif" />
+    <div class="cookie-text">
+      <p class="cookie-title">// cookies!</p>
+      <p class="cookie-body">diese seite nutzt keine tracking cookies.<br>nur technisch notwendige daten.</p>
+    </div>
+    <button id="cookie-accept" class="cookie-btn">[ ok ]</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

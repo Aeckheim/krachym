@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website Dashboard</title>
+  <style>
+    :root {
+      --bg: #f7f7f7;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --muted: #888;
+      --border: #e2e2e2;
+      --accent: #3b5bdb;
+      --danger: #e03131;
+      --success: #2f9e44;
+      --radius: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; font-size: 15px; }
+
+    /* LAYOUT */
+    .app { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: 220px; background: #1a1a2e; color: #ccc;
+      padding: 1.5rem 0; position: fixed; top: 0; bottom: 0; left: 0;
+      display: flex; flex-direction: column;
+    }
+    .sidebar-title { padding: 0 1.5rem 1.5rem; font-size: 1rem; font-weight: 600; color: #fff; letter-spacing: 0.04em; }
+    .sidebar-title span { display: block; font-size: 0.7rem; font-weight: normal; color: #888; margin-top: 0.2rem; }
+    .sidebar nav a {
+      display: block; padding: 0.65rem 1.5rem; font-size: 0.85rem;
+      color: #aaa; cursor: pointer; transition: all 0.15s; text-decoration: none;
+    }
+    .sidebar nav a:hover, .sidebar nav a.active { background: rgba(255,255,255,0.08); color: #fff; }
+    .sidebar nav a.active { border-left: 3px solid var(--accent); }
+    .sidebar-section-label {
+      padding: 1rem 1.5rem 0.3rem; font-size: 0.68rem; font-weight: 700;
+      color: #555; text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    .sidebar-footer { margin-top: auto; padding: 1rem 1.5rem; font-size: 0.75rem; color: #555; }
+
+    .main { margin-left: 220px; flex: 1; }
+    .topbar {
+      background: var(--card); border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .topbar h1 { font-size: 1.1rem; font-weight: 600; }
+    .actions { display: flex; gap: 0.75rem; }
+    .content { padding: 2rem; }
+
+    /* BUTTONS */
+    .btn {
+      padding: 0.55rem 1.2rem; border: none; border-radius: var(--radius);
+      font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #2f4dbf; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #c42b2b; }
+    .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-ghost:hover { background: var(--border); }
+    .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.78rem; }
+    .btn-success { background: var(--success); color: #fff; }
+
+    /* CARDS */
+    .card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1.5rem; }
+    .card-title { font-weight: 600; margin-bottom: 1.25rem; font-size: 0.95rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* FORM */
+    .field { margin-bottom: 1.25rem; }
+    .field label { display: block; font-size: 0.82rem; font-weight: 500; margin-bottom: 0.4rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .field input, .field textarea, .field select {
+      width: 100%; padding: 0.6rem 0.85rem; border: 1px solid var(--border);
+      border-radius: var(--radius); font-size: 0.9rem; background: var(--bg);
+      color: var(--text); outline: none; transition: border 0.15s;
+      font-family: inherit;
+    }
+    .field input:focus, .field textarea:focus { border-color: var(--accent); background: #fff; }
+    .field textarea { resize: vertical; min-height: 100px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+    /* COLOR FIELD */
+    .color-field { display: flex; gap: 0.75rem; align-items: center; }
+    .color-field input[type=color] { width: 44px; height: 36px; padding: 2px; border-radius: 6px; cursor: pointer; flex-shrink: 0; }
+    .color-field input[type=text] { flex: 1; }
+
+    /* LIST ITEMS */
+    .list-item {
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1rem; margin-bottom: 0.75rem; background: var(--bg);
+    }
+    .list-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+    .list-item-header strong { font-size: 0.9rem; }
+    .list-item-header .item-actions { display: flex; gap: 0.5rem; }
+
+    /* TOAST */
+    #toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      background: var(--success); color: #fff;
+      padding: 0.75rem 1.5rem; border-radius: var(--radius);
+      font-size: 0.9rem; font-weight: 500;
+      opacity: 0; transform: translateY(10px);
+      transition: all 0.3s; pointer-events: none; z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.error { background: var(--danger); }
+
+    /* SECTION VISIBILITY */
+    .tab-section { display: none; }
+    .tab-section.active { display: block; }
+
+    /* PREVIEW BAR */
+    .preview-bar {
+      background: #1a1a2e; color: #aaa; padding: 0.75rem 2rem;
+      font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center;
+    }
+    .preview-bar a { color: #6ea3ff; text-decoration: none; }
+    .preview-bar a:hover { text-decoration: underline; }
+
+    /* ── BUILDER ── */
+    .section-order-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .section-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.85rem 1rem; cursor: grab;
+      background: #fafafa; border: 1.5px solid var(--border);
+      border-radius: var(--radius); user-select: none;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    }
+    .section-item:hover { border-color: var(--accent); background: #eef1ff; box-shadow: 0 2px 8px rgba(59,91,219,0.08); }
+    .section-item.drag-over { background: #dde4ff; border-color: var(--accent); }
+    .section-item.dragging { opacity: 0.35; border-style: dashed; cursor: grabbing; }
+    .section-item-handle { font-size: 1.1rem; color: #ccc; flex-shrink: 0; line-height: 1; }
+    .section-item-label { font-weight: 600; font-size: 0.9rem; }
+    .section-item-hint { margin-left: auto; font-size: 0.72rem; color: var(--muted); }
+
+    .color-preview-strip {
+      display: flex; height: 48px; border-radius: var(--radius);
+      overflow: hidden; border: 1px solid var(--border); margin-bottom: 1.5rem;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .color-preview-swatch {
+      flex: 1; transition: background 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .color-preview-swatch span {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em;
+      mix-blend-mode: difference; color: white; opacity: 0.7;
+    }
+
+    .typography-preview {
+      background: #111; color: #fff; border-radius: var(--radius);
+      padding: 1.5rem 1.25rem; margin-bottom: 1.25rem;
+      font-family: 'IBM Plex Mono', monospace;
+      transition: all 0.3s;
+    }
+    .typography-preview .tp-heading { font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: 0.5rem; transition: font-size 0.3s; }
+    .typography-preview .tp-body { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+
+    .builder-note { font-size: 0.82rem; color: var(--muted); margin-bottom: 1.25rem; line-height: 1.5; }
+    .builder-note a { color: var(--accent); }
+
+    /* SECTION COLORS */
+    .section-colors-table { width: 100%; border-collapse: collapse; }
+    .section-colors-table th {
+      font-size: 0.75rem; color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.06em; padding: 0 0.5rem 0.75rem; text-align: left;
+    }
+    .section-colors-table td { padding: 0.35rem 0.5rem; vertical-align: middle; }
+    .section-colors-table tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
+    .section-colors-table .sec-name { font-weight: 600; font-size: 0.88rem; width: 90px; }
+    .section-colors-table .color-field input[type=text] { width: 72px; }
+
+    /* EFFECTS */
+    .effects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+    .effect-toggle {
+      display: flex; align-items: flex-start; gap: 0.7rem;
+      padding: 0.75rem 1rem; background: #fafafa;
+      border: 1.5px solid var(--border); border-radius: var(--radius);
+      cursor: pointer; transition: border-color 0.15s, background 0.15s;
+    }
+    .effect-toggle:hover { border-color: var(--accent); background: #eef1ff; }
+    .effect-toggle input[type=checkbox] { width: 15px; height: 15px; margin-top: 2px; flex-shrink: 0; cursor: pointer; accent-color: var(--accent); }
+    .effect-toggle .et-label { font-size: 0.88rem; font-weight: 600; }
+    .effect-toggle .et-desc { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 1px; }
+
+    /* ELEMENT EFFECTS */
+    .ee-row {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.65rem 0; border-bottom: 1px solid var(--border);
+    }
+    .ee-row:last-child { border-bottom: none; }
+    .ee-elem-label { width: 130px; font-weight: 600; font-size: 0.83rem; flex-shrink: 0; color: var(--text); }
+    .ee-toggles { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .ee-btn {
+      padding: 0.2rem 0.55rem; font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.04em; text-transform: lowercase;
+      border: 1.5px solid var(--border); border-radius: 4px;
+      cursor: pointer; background: white; color: var(--muted);
+      transition: all 0.12s;
+    }
+    .ee-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .ee-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+    /* PHOTOS */
+    .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .photo-item {
+      background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; position: relative;
+    }
+    .photo-item img { width: 100%; height: 140px; object-fit: cover; display: block; }
+    .photo-item-body { padding: 0.6rem 0.75rem; }
+    .photo-item-body input { width: 100%; font-size: 0.8rem; padding: 0.35rem 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: #fff; }
+    .photo-item-actions { display: flex; gap: 0.4rem; margin-top: 0.5rem; }
+    .photo-item-actions button { flex: 1; }
+    .photo-upload-zone {
+      border: 2px dashed var(--border); border-radius: var(--radius); padding: 2rem;
+      text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+      color: var(--muted); font-size: 0.85rem;
+    }
+    .photo-upload-zone:hover, .photo-upload-zone.drag-over { border-color: var(--accent); background: #eef1ff; color: var(--accent); }
+    .photo-upload-zone .upload-icon { font-size: 1.8rem; display: block; margin-bottom: 0.5rem; }
+    .upload-progress { margin-top: 0.75rem; font-size: 0.8rem; color: var(--muted); display: none; }
+    .upload-progress.active { display: block; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Dashboard <span>Website Editor</span></div>
+    <nav>
+      <div class="sidebar-section-label">Content</div>
+      <a class="active" onclick="showTab('artist')">Artist</a>
+      <a onclick="showTab('social')">Social Links</a>
+      <a onclick="showTab('releases')">Releases</a>
+      <a onclick="showTab('photos')">Photos</a>
+      <a onclick="showTab('videos')">Videos</a>
+      <a onclick="showTab('shows')">Live Shows</a>
+      <a onclick="showTab('imprint')">Imprint</a>
+      <div class="sidebar-section-label">Appearance</div>
+      <a onclick="showTab('builder')">Builder</a>
+      <a onclick="showTab('design')">SEO &amp; Meta</a>
+    </nav>
+    <div class="sidebar-footer">Save → refresh website</div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="preview-bar">
+      <span>Editing: <strong id="site-name-bar">—</strong></span>
+      <a href="index.html" target="_blank">Open Website ↗</a>
+    </div>
+    <div class="topbar">
+      <h1 id="topbar-title">Artist Info</h1>
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="loadData()">↺ Reset</button>
+        <button class="btn btn-primary" onclick="saveAll()">Save Changes</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ARTIST -->
+      <div id="tab-artist" class="tab-section active">
+        <div class="card">
+          <div class="card-title">Artist Info</div>
+          <div class="field"><label>Name</label><input id="artist-name" type="text" /></div>
+          <div class="field"><label>Tagline / Genre</label><input id="artist-tagline" type="text" /></div>
+          <div class="field"><label>About Text</label><textarea id="artist-about" rows="6"></textarea></div>
+          <div class="field">
+            <label>Artist Photo</label>
+            <div style="display:flex;gap:1rem;align-items:flex-start">
+              <img id="artist-photo-preview" src="" style="width:80px;height:80px;object-fit:cover;border-radius:4px;border:1px solid var(--border);display:none" />
+              <div style="flex:1">
+                <input id="artist-photo" type="text" placeholder="images/artist.jpg" style="margin-bottom:0.5rem" oninput="updateArtistPhotoPreview()" />
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+                  <button class="btn btn-ghost btn-sm" onclick="document.getElementById('artist-photo-file').click()">Upload Photo</button>
+                  <button class="btn btn-danger btn-sm" onclick="removeArtistPhoto()">Remove</button>
+                  <input type="file" id="artist-photo-file" accept="image/*" style="display:none" onchange="uploadArtistPhoto(this.files[0])" />
+                </div>
+                <div id="artist-photo-progress" style="font-size:0.8rem;color:var(--muted);margin-top:0.4rem;display:none"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOCIAL -->
+      <div id="tab-social" class="tab-section">
+        <div class="card">
+          <div class="card-title">Social Links</div>
+          <div class="field"><label>Instagram URL</label><input id="social-instagram" type="url" /></div>
+          <div class="field"><label>Facebook URL</label><input id="social-facebook" type="url" /></div>
+          <div class="field"><label>Spotify URL</label><input id="social-spotify" type="url" /></div>
+          <div class="field"><label>Bandcamp URL (also used for Shop)</label><input id="social-bandcamp" type="url" /></div>
+        </div>
+      </div>
+
+      <!-- RELEASES -->
+      <div id="tab-releases" class="tab-section">
+        <div class="card">
+          <div class="card-title">Releases</div>
+          <div id="releases-list"></div>
+          <button class="btn btn-ghost" onclick="addRelease()">+ Add Release</button>
+        </div>
+      </div>
+
+      <!-- PHOTOS -->
+      <div id="tab-photos" class="tab-section">
+        <div class="card">
+          <div class="card-title">Photo Gallery</div>
+          <p class="builder-note">Photos appear in the gallery section of your website. Drag to reorder, click Delete to remove from the site (file stays on disk). Use Upload to add new photos.</p>
+          <div id="photos-list" class="photo-grid"></div>
+          <div class="photo-upload-zone" id="photo-upload-zone" onclick="document.getElementById('photo-file-input').click()">
+            <span class="upload-icon">📷</span>
+            Click to upload photos, or drag &amp; drop here<br/>
+            <small>JPG, PNG, GIF, WebP · Multiple files allowed</small>
+            <input type="file" id="photo-file-input" accept="image/*" multiple style="display:none" onchange="uploadPhotos(this.files)" />
+          </div>
+          <div class="upload-progress" id="upload-progress">Uploading…</div>
+        </div>
+      </div>
+
+      <!-- VIDEOS -->
+      <div id="tab-videos" class="tab-section">
+        <div class="card">
+          <div class="card-title">YouTube Videos</div>
+          <div id="videos-list"></div>
+          <button class="btn btn-ghost" onclick="addVideo()">+ Add Video</button>
+        </div>
+      </div>
+
+      <!-- SHOWS -->
+      <div id="tab-shows" class="tab-section">
+        <div class="card">
+          <div class="card-title">Upcoming Shows</div>
+          <div id="shows-upcoming-list"></div>
+          <button class="btn btn-ghost" onclick="addShow('upcoming')">+ Add Show</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Past Shows</div>
+          <div id="shows-past-list"></div>
+          <button class="btn btn-ghost" onclick="addShow('past')">+ Add Past Show</button>
+        </div>
+      </div>
+
+      <!-- IMPRINT -->
+      <div id="tab-imprint" class="tab-section">
+        <div class="card">
+          <div class="card-title">Imprint / Contact</div>
+          <div class="field"><label>Full Name</label><input id="imprint-name" type="text" /></div>
+          <div class="field"><label>Address</label><input id="imprint-address" type="text" /></div>
+          <div class="field"><label>Email</label><input id="imprint-email" type="email" /></div>
+          <div class="field"><label>Additional Text</label><textarea id="imprint-text" rows="3"></textarea></div>
+        </div>
+      </div>
+
+      <!-- BUILDER -->
+      <div id="tab-builder" class="tab-section">
+
+        <!-- Section Order -->
+        <div class="card">
+          <div class="card-title">Page Structure</div>
+          <p class="builder-note">Drag sections to reorder them on the website. Imprint &amp; Footer always stay at the bottom.</p>
+          <div id="section-order-list" class="section-order-list"></div>
+        </div>
+
+        <!-- Colors -->
+        <div class="card">
+          <div class="card-title">Color Scheme</div>
+          <div class="color-preview-strip">
+            <div class="color-preview-swatch" id="preview-bg"><span>BG</span></div>
+            <div class="color-preview-swatch" id="preview-text"><span>TEXT</span></div>
+            <div class="color-preview-swatch" id="preview-accent"><span>ACCENT</span></div>
+          </div>
+          <div class="field-row-3">
+            <div class="field">
+              <label>Background</label>
+              <div class="color-field">
+                <input type="color" id="color-bg-picker" />
+                <input type="text" id="color-bg" maxlength="7" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Text / Primary</label>
+              <div class="color-field">
+                <input type="color" id="color-text-picker" />
+                <input type="text" id="color-text" maxlength="7" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Accent</label>
+              <div class="color-field">
+                <input type="color" id="color-accent-picker" />
+                <input type="text" id="color-accent" maxlength="7" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nav & Marquee Colors -->
+        <div class="card">
+          <div class="card-title">Nav &amp; Marquee</div>
+          <div class="field-row-3" style="margin-bottom:1rem">
+            <div class="field">
+              <label>Nav Background</label>
+              <div class="color-field">
+                <input type="color" id="color-nav-bg-picker" />
+                <input type="text" id="color-nav-bg" maxlength="7" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Nav Text</label>
+              <div class="color-field">
+                <input type="color" id="color-nav-text-picker" />
+                <input type="text" id="color-nav-text" maxlength="7" />
+              </div>
+            </div>
+          </div>
+          <div class="field-row-3">
+            <div class="field">
+              <label>Marquee Background</label>
+              <div class="color-field">
+                <input type="color" id="color-marquee-bg-picker" />
+                <input type="text" id="color-marquee-bg" maxlength="7" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Marquee Text</label>
+              <div class="color-field">
+                <input type="color" id="color-marquee-text-picker" />
+                <input type="text" id="color-marquee-text" maxlength="7" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Typography -->
+        <div class="card">
+          <div class="card-title">Typography</div>
+          <div class="typography-preview" id="typo-preview">
+            <div class="tp-heading" id="tp-heading-sample">// krachym</div>
+            <div class="tp-body">electronic pop symphony · noise pop · experimental</div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Font Style</label>
+              <select id="meta-font" onchange="updateTypoPreview()">
+                <option value="mono">Monospace</option>
+                <option value="sans">Sans-serif</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Heading Size</label>
+              <select id="meta-heading-scale" onchange="updateTypoPreview()">
+                <option value="compact">Compact (0.75×)</option>
+                <option value="normal" selected>Normal (1×)</option>
+                <option value="large">Large (1.3×)</option>
+                <option value="xlarge">Extra Large (1.6×)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Colors -->
+        <div class="card">
+          <div class="card-title">Section Colors</div>
+          <p class="builder-note">Background and text color per section. Changes override the default color scheme.</p>
+          <table class="section-colors-table">
+            <thead>
+              <tr>
+                <th>Section</th>
+                <th>Background</th>
+                <th>Text Color</th>
+              </tr>
+            </thead>
+            <tbody id="section-colors-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- Effects -->
+        <div class="card">
+          <div class="card-title">Visual Effects</div>
+          <div class="effects-grid">
+            <label class="effect-toggle">
+              <input type="checkbox" id="fx-checkerboard" />
+              <div><span class="et-label">Checkerboard</span><span class="et-desc">Background pattern overlay</span></div>
+            </label>
+            <label class="effect-toggle">
+              <input type="checkbox" id="fx-flying-shapes" />
+              <div><span class="et-label">Flying Shapes</span><span class="et-desc">Retro animated sprites</span></div>
+            </label>
+            <label class="effect-toggle">
+              <input type="checkbox" id="fx-circles" />
+              <div><span class="et-label">Deco Circles</span><span class="et-desc">Parallax circle overlay</span></div>
+            </label>
+            <label class="effect-toggle">
+              <input type="checkbox" id="fx-marquee" />
+              <div><span class="et-label">Marquee</span><span class="et-desc">Scrolling ticker bar</span></div>
+            </label>
+            <label class="effect-toggle">
+              <input type="checkbox" id="fx-glitch" />
+              <div><span class="et-label">Glitch Effect</span><span class="et-desc">Hero heading animation</span></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Element Effects -->
+        <div class="card">
+          <div class="card-title">Element Effects</div>
+          <p class="builder-note">Apply one or more effects to specific elements. Click to toggle — active effects are highlighted.</p>
+          <div id="element-effects-list"></div>
+        </div>
+
+      </div>
+
+      <!-- DESIGN / SEO -->
+      <div id="tab-design" class="tab-section">
+        <div class="card">
+          <div class="card-title">SEO &amp; Meta</div>
+          <div class="field">
+            <label>Page Title (browser tab)</label>
+            <input id="meta-title" type="text" />
+          </div>
+          <div class="field">
+            <label>SEO Description</label>
+            <input id="meta-description" type="text" />
+          </div>
+          <p class="builder-note" style="margin-top:0.5rem">
+            Colors, fonts and layout can be changed in the
+            <a href="#" onclick="showTab('builder');return false;">Builder tab</a>.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast">Saved!</div>
+
+<script>
+let data = {};
+
+const TAB_TITLES = {
+  artist: 'Artist Info', social: 'Social Links', releases: 'Releases',
+  photos: 'Photos', videos: 'Videos', shows: 'Live Shows', imprint: 'Imprint',
+  builder: 'Builder', design: 'SEO & Meta'
+};
+
+function showTab(name) {
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  const link = document.querySelector(`.sidebar nav a[onclick="showTab('${name}')"]`);
+  if (link) link.classList.add('active');
+  document.getElementById('topbar-title').textContent = TAB_TITLES[name];
+}
+
+async function loadData() {
+  try {
+    const res = await fetch('content.json?t=' + Date.now());
+    data = await res.json();
+    populateForm();
+    toast('Content loaded');
+  } catch(e) {
+    toast('Error loading content.json', true);
+  }
+}
+
+function populateForm() {
+  const a = data.artist || {};
+  document.getElementById('artist-name').value = a.name || '';
+  document.getElementById('artist-tagline').value = a.tagline || '';
+  document.getElementById('artist-about').value = a.about || '';
+  document.getElementById('artist-photo').value = a.photo || '';
+  document.getElementById('site-name-bar').textContent = a.name || '—';
+  updateArtistPhotoPreview();
+
+  const s = data.social || {};
+  document.getElementById('social-instagram').value = s.instagram || '';
+  document.getElementById('social-facebook').value = s.facebook || '';
+  document.getElementById('social-spotify').value = s.spotify || '';
+  document.getElementById('social-bandcamp').value = s.bandcamp || '';
+
+  renderReleases();
+  renderPhotos();
+  renderVideos();
+  renderShows('upcoming');
+  renderShows('past');
+
+  const imp = data.imprint || {};
+  document.getElementById('imprint-name').value = imp.name || '';
+  document.getElementById('imprint-address').value = imp.address || '';
+  document.getElementById('imprint-email').value = imp.email || '';
+  document.getElementById('imprint-text').value = imp.text || '';
+
+  const m = data.meta || {};
+  document.getElementById('meta-title').value = m.title || '';
+  document.getElementById('meta-description').value = m.description || '';
+  document.getElementById('meta-font').value = m.font || 'mono';
+  document.getElementById('meta-heading-scale').value = m.heading_scale || 'normal';
+
+  setColor('color-bg', m.background_color || '#f5f500');
+  setColor('color-text', m.primary_color || '#000000');
+  setColor('color-accent', m.accent_color || '#ff2600');
+  setColor('color-nav-bg', m.nav_bg || '#000000');
+  setColor('color-nav-text', m.nav_color || '#f5f500');
+  setColor('color-marquee-bg', m.marquee_bg || '#000000');
+  setColor('color-marquee-text', m.marquee_color || '#f5f500');
+
+  setupColorSync('color-bg');
+  setupColorSync('color-text');
+  setupColorSync('color-accent');
+  setupColorSync('color-nav-bg');
+  setupColorSync('color-nav-text');
+  setupColorSync('color-marquee-bg');
+  setupColorSync('color-marquee-text');
+  updateColorPreview();
+
+  renderSectionOrder();
+  renderSectionColors();
+  populateEffects();
+  renderElementEffects();
+  updateTypoPreview();
+}
+
+// ── SECTION COLORS ──
+
+const DEFAULT_SECTION_COLORS = {
+  about:    { bg: '#000000', color: '#f5f500' },
+  releases: { bg: '#0a0aff', color: '#f5f500' },
+  photos:   { bg: '#000000', color: '#f5f500' },
+  videos:   { bg: '#ff2600', color: '#ffffff' },
+  live:     { bg: '#000000', color: '#f5f500' },
+};
+
+function renderSectionColors() {
+  const sections = (data.meta && data.meta.sections) || {};
+  const tbody = document.getElementById('section-colors-tbody');
+  tbody.innerHTML = Object.entries(DEFAULT_SECTION_COLORS).map(([id, def]) => {
+    const cur = sections[id] || def;
+    const label = id.charAt(0).toUpperCase() + id.slice(1);
+    return `<tr>
+      <td class="sec-name">${label}</td>
+      <td>
+        <div class="color-field">
+          <input type="color" id="sec-${id}-bg-p" value="${cur.bg}"
+            oninput="syncSecColor('${id}','bg',this.value)" />
+          <input type="text"  id="sec-${id}-bg" value="${cur.bg}" maxlength="7"
+            oninput="if(/^#[0-9a-fA-F]{6}$/.test(this.value))syncSecColor('${id}','bg',this.value)" />
+        </div>
+      </td>
+      <td>
+        <div class="color-field">
+          <input type="color" id="sec-${id}-color-p" value="${cur.color}"
+            oninput="syncSecColor('${id}','color',this.value)" />
+          <input type="text"  id="sec-${id}-color" value="${cur.color}" maxlength="7"
+            oninput="if(/^#[0-9a-fA-F]{6}$/.test(this.value))syncSecColor('${id}','color',this.value)" />
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function syncSecColor(id, prop, val) {
+  const textId = `sec-${id}-${prop}`;
+  const pickId = `sec-${id}-${prop}-p`;
+  const t = document.getElementById(textId);
+  const p = document.getElementById(pickId);
+  if (t) t.value = val;
+  if (p) p.value = val;
+}
+
+// ── EFFECTS ──
+
+function populateEffects() {
+  const fx = (data.meta && data.meta.effects) || {};
+  document.getElementById('fx-checkerboard').checked  = fx.checkerboard  !== false;
+  document.getElementById('fx-flying-shapes').checked = fx.flying_shapes !== false;
+  document.getElementById('fx-circles').checked       = fx.circles       !== false;
+  document.getElementById('fx-marquee').checked       = fx.marquee       !== false;
+  document.getElementById('fx-glitch').checked        = fx.glitch        !== false;
+}
+
+// ── ELEMENT EFFECTS ──
+
+const AVAILABLE_EFFECTS = [
+  { id: 'glitch',    label: 'Glitch'    },
+  { id: 'flicker',   label: 'Flicker'   },
+  { id: 'shake',     label: 'Shake'     },
+  { id: 'scanlines', label: 'Scanlines' },
+  { id: 'invert',    label: 'Invert'    },
+  { id: 'blink',     label: 'Blink'     },
+  { id: 'neon',      label: 'Neon'      },
+];
+
+const EFFECT_ELEMENTS = [
+  { id: 'hero-name',      label: 'Hero Heading'       },
+  { id: 'hero-tagline',   label: 'Hero Tagline'       },
+  { id: 'section-titles', label: 'Section Titles'     },
+  { id: 'nav-logo',       label: 'Nav Logo'           },
+  { id: 'marquee',        label: 'Marquee'            },
+  { id: 'about-text',     label: 'About Text'         },
+];
+
+function renderElementEffects() {
+  const elemEffects = (data.meta && data.meta.element_effects) || {};
+  const container = document.getElementById('element-effects-list');
+  container.innerHTML = EFFECT_ELEMENTS.map(elem => {
+    const active = elemEffects[elem.id] || [];
+    const btns = AVAILABLE_EFFECTS.map(fx => {
+      const isActive = active.includes(fx.id);
+      return `<button class="ee-btn${isActive ? ' active' : ''}"
+        onclick="toggleElemEffect('${elem.id}','${fx.id}',this)">${fx.label}</button>`;
+    }).join('');
+    return `<div class="ee-row">
+      <div class="ee-elem-label">${elem.label}</div>
+      <div class="ee-toggles">${btns}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleElemEffect(elemId, fxId, btn) {
+  btn.classList.toggle('active');
+  if (!data.meta) data.meta = {};
+  if (!data.meta.element_effects) data.meta.element_effects = {};
+  if (!data.meta.element_effects[elemId]) data.meta.element_effects[elemId] = [];
+  const arr = data.meta.element_effects[elemId];
+  const idx = arr.indexOf(fxId);
+  if (idx >= 0) arr.splice(idx, 1);
+  else arr.push(fxId);
+}
+
+// ── COLORS ──
+
+function setColor(id, val) {
+  document.getElementById(id).value = val;
+  document.getElementById(id + '-picker').value = val;
+}
+
+function setupColorSync(id) {
+  const picker = document.getElementById(id + '-picker');
+  const text = document.getElementById(id);
+  picker.oninput = () => { text.value = picker.value; updateColorPreview(); };
+  text.oninput = () => {
+    if (/^#[0-9a-fA-F]{6}$/.test(text.value)) { picker.value = text.value; updateColorPreview(); }
+  };
+}
+
+function updateColorPreview() {
+  const bg = document.getElementById('color-bg').value;
+  const text = document.getElementById('color-text').value;
+  const accent = document.getElementById('color-accent').value;
+  if (bg)     document.getElementById('preview-bg').style.background = bg;
+  if (text)   document.getElementById('preview-text').style.background = text;
+  if (accent) document.getElementById('preview-accent').style.background = accent;
+}
+
+// ── TYPOGRAPHY PREVIEW ──
+
+const SCALE_MAP = { compact: 0.75, normal: 1, large: 1.3, xlarge: 1.6 };
+const FONT_MAP  = { mono: "'IBM Plex Mono', monospace", sans: "system-ui, sans-serif" };
+
+function updateTypoPreview() {
+  const scale = SCALE_MAP[document.getElementById('meta-heading-scale').value] || 1;
+  const font  = FONT_MAP[document.getElementById('meta-font').value] || FONT_MAP.mono;
+  const el = document.getElementById('tp-heading-sample');
+  el.style.fontSize = (2 * scale) + 'rem';
+  el.style.fontFamily = font;
+  document.querySelector('.tp-body').style.fontFamily = font;
+}
+
+// ── BUILDER: SECTION ORDER ──
+
+const SECTIONS_META = [
+  { id: 'about',    label: 'About'    },
+  { id: 'releases', label: 'Releases' },
+  { id: 'photos',   label: 'Photos'   },
+  { id: 'videos',   label: 'Videos'   },
+  { id: 'live',     label: 'Live'     },
+];
+
+function renderSectionOrder() {
+  const defaultOrder = SECTIONS_META.map(s => s.id);
+  const order = (data.meta && data.meta.section_order) || defaultOrder;
+  const list = document.getElementById('section-order-list');
+  list.innerHTML = order.map((id, i) => {
+    const sec = SECTIONS_META.find(s => s.id === id);
+    if (!sec) return '';
+    return `<div class="section-item" draggable="true" data-section="${id}">
+      <span class="section-item-handle">&#9776;</span>
+      <span class="section-item-label">${sec.label}</span>
+      <span class="section-item-hint">drag to reorder</span>
+    </div>`;
+  }).join('');
+}
+
+// Drag & drop — event delegation, init once
+(function initDragDrop() {
+  const list = document.getElementById('section-order-list');
+  let dragSrc = null;
+
+  list.addEventListener('dragstart', e => {
+    dragSrc = e.target.closest('.section-item');
+    if (!dragSrc) return;
+    setTimeout(() => dragSrc.classList.add('dragging'), 0);
+    e.dataTransfer.effectAllowed = 'move';
+  });
+
+  list.addEventListener('dragend', () => {
+    list.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+    list.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    dragSrc = null;
+    updateSectionOrderFromDOM();
+  });
+
+  list.addEventListener('dragover', e => {
+    e.preventDefault();
+    if (!dragSrc) return;
+    const target = e.target.closest('.section-item');
+    if (!target || target === dragSrc) return;
+    list.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    target.classList.add('drag-over');
+    const rect = target.getBoundingClientRect();
+    if (e.clientY < rect.top + rect.height / 2) {
+      list.insertBefore(dragSrc, target);
+    } else {
+      list.insertBefore(dragSrc, target.nextSibling);
+    }
+  });
+
+  list.addEventListener('dragleave', e => {
+    const target = e.target.closest('.section-item');
+    if (target && !list.contains(e.relatedTarget)) target.classList.remove('drag-over');
+  });
+})();
+
+function updateSectionOrderFromDOM() {
+  const items = document.querySelectorAll('#section-order-list .section-item');
+  if (!data.meta) data.meta = {};
+  data.meta.section_order = [...items].map(el => el.dataset.section);
+}
+
+// ── ARTIST PHOTO ──
+function updateArtistPhotoPreview() {
+  const path = document.getElementById('artist-photo').value.trim();
+  const img = document.getElementById('artist-photo-preview');
+  if (path) { img.src = path; img.style.display = 'block'; }
+  else img.style.display = 'none';
+}
+
+function removeArtistPhoto() {
+  document.getElementById('artist-photo').value = '';
+  updateArtistPhotoPreview();
+}
+
+async function uploadArtistPhoto(file) {
+  if (!file) return;
+  const progress = document.getElementById('artist-photo-progress');
+  progress.style.display = 'block';
+  progress.textContent = 'Uploading…';
+  const formData = new FormData();
+  formData.append('file', file, file.name);
+  try {
+    const res = await fetch('/upload', { method: 'POST', body: formData });
+    if (res.ok) {
+      const json = await res.json();
+      const path = json.paths && json.paths[0];
+      if (path) {
+        document.getElementById('artist-photo').value = path;
+        updateArtistPhotoPreview();
+        progress.textContent = '✓ Uploaded. Save Changes to apply.';
+        setTimeout(() => { progress.style.display = 'none'; }, 4000);
+      }
+    } else {
+      progress.textContent = 'Upload failed – server not running?';
+      setTimeout(() => { progress.style.display = 'none'; }, 4000);
+    }
+  } catch(e) {
+    progress.textContent = 'Error: run serve.py first.';
+    setTimeout(() => { progress.style.display = 'none'; }, 4000);
+  }
+}
+
+// ── PHOTOS ──
+function renderPhotos() {
+  const list = document.getElementById('photos-list');
+  const photos = data.photos || [];
+  if (!photos.length) {
+    list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem">No photos yet. Upload some below.</p>';
+    return;
+  }
+  list.innerHTML = photos.map((p, i) => `
+    <div class="photo-item">
+      <img src="${p.src}" alt="${p.alt||''}" onerror="this.style.opacity='0.3'" />
+      <div class="photo-item-body">
+        <input value="${(p.alt||'').replace(/"/g,'&quot;')}" placeholder="Caption / alt text"
+          oninput="data.photos[${i}].alt=this.value" />
+        <div class="photo-item-actions">
+          <button class="btn btn-ghost btn-sm" onclick="movePhoto(${i},-1)">↑</button>
+          <button class="btn btn-ghost btn-sm" onclick="movePhoto(${i},1)">↓</button>
+          <button class="btn btn-danger btn-sm" onclick="removePhoto(${i})">Delete</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+}
+
+// Init upload zone drag-and-drop once
+(function() {
+  document.addEventListener('DOMContentLoaded', () => {
+    const zone = document.getElementById('photo-upload-zone');
+    if (!zone) return;
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      if (e.dataTransfer.files.length) uploadPhotos(e.dataTransfer.files);
+    });
+  });
+})();
+
+function movePhoto(i, dir) {
+  const arr = data.photos;
+  const j = i + dir;
+  if (j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  renderPhotos();
+}
+
+function removePhoto(i) {
+  const photo = data.photos[i];
+  if (!confirm(`Remove "${photo.alt || photo.src}" from the gallery?\n(File stays on disk)`)) return;
+  data.photos.splice(i, 1);
+  renderPhotos();
+}
+
+async function uploadPhotos(files) {
+  const progress = document.getElementById('upload-progress');
+  progress.classList.add('active');
+  progress.textContent = `Uploading ${files.length} file(s)…`;
+
+  const formData = new FormData();
+  for (const f of files) formData.append('file', f, f.name);
+
+  try {
+    const res = await fetch('/upload', { method: 'POST', body: formData });
+    if (res.ok) {
+      const json = await res.json();
+      const paths = json.paths || [];
+      if (!data.photos) data.photos = [];
+      paths.forEach(p => {
+        if (!data.photos.find(x => x.src === p)) {
+          data.photos.push({ src: p, alt: '' });
+        }
+      });
+      renderPhotos();
+      progress.textContent = `✓ Uploaded ${paths.length} photo(s). Don't forget to Save Changes!`;
+      setTimeout(() => progress.classList.remove('active'), 4000);
+    } else {
+      progress.textContent = 'Upload failed – is the server running?';
+      setTimeout(() => progress.classList.remove('active'), 4000);
+    }
+  } catch(e) {
+    progress.textContent = 'Upload error: server not reachable. Run serve.py first.';
+    setTimeout(() => progress.classList.remove('active'), 5000);
+  }
+}
+
+// ── RELEASES ──
+function renderReleases() {
+  const list = document.getElementById('releases-list');
+  list.innerHTML = (data.releases || []).map((r, i) => `
+    <div class="list-item">
+      <div class="list-item-header">
+        <strong>${r.title || 'Release ' + (i+1)}</strong>
+        <div class="item-actions">
+          <button class="btn btn-ghost btn-sm" onclick="moveItem('releases', ${i}, -1)">↑</button>
+          <button class="btn btn-ghost btn-sm" onclick="moveItem('releases', ${i}, 1)">↓</button>
+          <button class="btn btn-danger btn-sm" onclick="removeItem('releases', ${i})">Remove</button>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Title</label><input value="${r.title||''}" oninput="data.releases[${i}].title=this.value; updateListHeader('releases-list', ${i}, this.value)" /></div>
+        <div class="field"><label>Year</label><input value="${r.year||''}" oninput="data.releases[${i}].year=this.value" /></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Type (Album / Single / EP)</label><input value="${r.type||''}" oninput="data.releases[${i}].type=this.value" /></div>
+        <div class="field"><label>Cover Image Path</label><input value="${r.cover||''}" oninput="data.releases[${i}].cover=this.value" /></div>
+      </div>
+      <div class="field"><label>Link (Bandcamp / Spotify)</label><input type="url" value="${r.link||''}" oninput="data.releases[${i}].link=this.value" /></div>
+      <div class="field">
+        <label>Bandcamp Album ID <small style="font-weight:normal;text-transform:none">(numeric ID for embedded player — find it in the Bandcamp share/embed code, e.g. <code>album=1234567890</code>)</small></label>
+        <input value="${r.bandcamp_embed_id||''}" placeholder="e.g. 1234567890" oninput="data.releases[${i}].bandcamp_embed_id=this.value" />
+      </div>
+      <div class="field"><label>Description (optional — shows next to cover)</label><textarea oninput="data.releases[${i}].description=this.value" style="min-height:120px">${r.description||''}</textarea></div>
+    </div>
+  `).join('');
+}
+
+function addRelease() {
+  if (!data.releases) data.releases = [];
+  data.releases.push({ title: 'New Release', year: new Date().getFullYear().toString(), type: 'Single', cover: '', link: '' });
+  renderReleases();
+}
+
+// ── VIDEOS ──
+function renderVideos() {
+  const list = document.getElementById('videos-list');
+  list.innerHTML = (data.videos || []).map((v, i) => `
+    <div class="list-item">
+      <div class="list-item-header">
+        <strong>${v.title || 'Video ' + (i+1)}</strong>
+        <div class="item-actions">
+          <button class="btn btn-ghost btn-sm" onclick="moveItem('videos', ${i}, -1)">↑</button>
+          <button class="btn btn-ghost btn-sm" onclick="moveItem('videos', ${i}, 1)">↓</button>
+          <button class="btn btn-danger btn-sm" onclick="removeItem('videos', ${i})">Remove</button>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Title</label><input value="${v.title||''}" oninput="data.videos[${i}].title=this.value; updateListHeader('videos-list', ${i}, this.value)" /></div>
+        <div class="field"><label>YouTube URL or Video ID</label><input value="${v.youtube_id||''}" placeholder="e.g. https://youtube.com/watch?v=dQw4w9WgXcQ or dQw4w9WgXcQ" oninput="data.videos[${i}].youtube_id=extractYoutubeId(this.value); this.value=data.videos[${i}].youtube_id" /></div>
+      </div>
+      <small style="color:var(--muted)">YouTube URL oder Video-ID – beides funktioniert</small>
+    </div>
+  `).join('');
+}
+
+function extractYoutubeId(input) {
+  if (!input) return '';
+  // Already an ID (no slash or dot)
+  if (/^[a-zA-Z0-9_-]{11}$/.test(input.trim())) return input.trim();
+  // Extract from URL
+  try {
+    const url = new URL(input.trim());
+    if (url.searchParams.get('v')) return url.searchParams.get('v');
+    // youtu.be/ID
+    const m = url.pathname.match(/\/([a-zA-Z0-9_-]{11})/);
+    if (m) return m[1];
+  } catch(e) {}
+  return input.trim();
+}
+
+function addVideo() {
+  if (!data.videos) data.videos = [];
+  data.videos.push({ title: 'New Video', youtube_id: '' });
+  renderVideos();
+}
+
+// ── SHOWS ──
+function renderShows(type) {
+  const shows = (data.shows || {})[type] || [];
+  const list = document.getElementById('shows-' + type + '-list');
+  list.innerHTML = shows.map((s, i) => `
+    <div class="list-item">
+      <div class="list-item-header">
+        <strong>${s.date ? s.date + ' – ' + s.venue : 'Show ' + (i+1)}</strong>
+        <div class="item-actions">
+          <button class="btn btn-ghost btn-sm" onclick="moveShow('${type}', ${i}, -1)">↑</button>
+          <button class="btn btn-ghost btn-sm" onclick="moveShow('${type}', ${i}, 1)">↓</button>
+          <button class="btn btn-danger btn-sm" onclick="removeShow('${type}', ${i})">Remove</button>
+        </div>
+      </div>
+      <div class="field-row-3">
+        <div class="field"><label>Date (YYYY-MM-DD)</label><input type="date" value="${s.date||''}" oninput="data.shows.${type}[${i}].date=this.value" /></div>
+        <div class="field"><label>Venue</label><input value="${s.venue||''}" oninput="data.shows.${type}[${i}].venue=this.value" /></div>
+        <div class="field"><label>City</label><input value="${s.city||''}" oninput="data.shows.${type}[${i}].city=this.value" /></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Country Code (e.g. DE)</label><input value="${s.country||''}" maxlength="3" oninput="data.shows.${type}[${i}].country=this.value" /></div>
+        <div class="field"><label>Tickets URL (optional)</label><input type="url" value="${s.tickets||''}" oninput="data.shows.${type}[${i}].tickets=this.value" /></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addShow(type) {
+  if (!data.shows) data.shows = { upcoming: [], past: [] };
+  if (!data.shows[type]) data.shows[type] = [];
+  data.shows[type].push({ date: '', venue: '', city: '', country: 'DE', tickets: '' });
+  renderShows(type);
+}
+
+function removeShow(type, i) {
+  data.shows[type].splice(i, 1);
+  renderShows(type);
+}
+
+function moveShow(type, i, dir) {
+  const arr = data.shows[type];
+  const j = i + dir;
+  if (j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  renderShows(type);
+}
+
+// ── GENERIC HELPERS ──
+function removeItem(key, i) {
+  data[key].splice(i, 1);
+  if (key === 'releases') renderReleases();
+  if (key === 'videos') renderVideos();
+}
+
+function moveItem(key, i, dir) {
+  const arr = data[key];
+  const j = i + dir;
+  if (j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  if (key === 'releases') renderReleases();
+  if (key === 'videos') renderVideos();
+}
+
+function updateListHeader(listId, i, val) {
+  const items = document.getElementById(listId).querySelectorAll('.list-item');
+  if (items[i]) items[i].querySelector('.list-item-header strong').textContent = val;
+}
+
+// ── COLLECT & SAVE ──
+function collectData() {
+  data.artist = {
+    name: document.getElementById('artist-name').value,
+    tagline: document.getElementById('artist-tagline').value,
+    about: document.getElementById('artist-about').value,
+    photo: document.getElementById('artist-photo').value
+  };
+  data.social = {
+    instagram: document.getElementById('social-instagram').value,
+    facebook: document.getElementById('social-facebook').value,
+    spotify: document.getElementById('social-spotify').value,
+    bandcamp: document.getElementById('social-bandcamp').value
+  };
+  data.imprint = {
+    name: document.getElementById('imprint-name').value,
+    address: document.getElementById('imprint-address').value,
+    email: document.getElementById('imprint-email').value,
+    text: document.getElementById('imprint-text').value
+  };
+  // Sync section order from current DOM state
+  updateSectionOrderFromDOM();
+  // Collect section colors
+  const sections = {};
+  Object.keys(DEFAULT_SECTION_COLORS).forEach(id => {
+    const bg    = document.getElementById('sec-' + id + '-bg');
+    const color = document.getElementById('sec-' + id + '-color');
+    if (bg && color) sections[id] = { bg: bg.value, color: color.value };
+  });
+  // Collect effects
+  const effects = {
+    checkerboard:  document.getElementById('fx-checkerboard').checked,
+    flying_shapes: document.getElementById('fx-flying-shapes').checked,
+    circles:       document.getElementById('fx-circles').checked,
+    marquee:       document.getElementById('fx-marquee').checked,
+    glitch:        document.getElementById('fx-glitch').checked,
+  };
+  // Merge meta — preserves section_order and any other fields
+  data.meta = {
+    ...data.meta,
+    title: document.getElementById('meta-title').value,
+    description: document.getElementById('meta-description').value,
+    font: document.getElementById('meta-font').value,
+    heading_scale: document.getElementById('meta-heading-scale').value,
+    background_color: document.getElementById('color-bg').value,
+    primary_color: document.getElementById('color-text').value,
+    accent_color: document.getElementById('color-accent').value,
+    nav_bg: document.getElementById('color-nav-bg').value,
+    nav_color: document.getElementById('color-nav-text').value,
+    marquee_bg: document.getElementById('color-marquee-bg').value,
+    marquee_color: document.getElementById('color-marquee-text').value,
+    sections,
+    effects,
+  };
+  document.getElementById('site-name-bar').textContent = data.artist.name || '—';
+}
+
+async function saveAll() {
+  collectData();
+  try {
+    const res = await fetch('/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data, null, 2)
+    });
+    if (res.ok) {
+      toast('Saved successfully!');
+    } else {
+      toast('Save failed – server error', true);
+    }
+  } catch(e) {
+    // Fallback: download JSON if no server
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'content.json';
+    a.click();
+    toast('Downloaded content.json (no server running)');
+  }
+}
+
+function toast(msg, isError = false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.toggle('error', isError);
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+loadData();
+</script>
+</body>
+</html>

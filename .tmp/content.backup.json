@@ -1,0 +1,383 @@
+{
+  "artist": {
+    "name": "Krachym",
+    "tagline": "electronic pop symphony · noise pop · experimental",
+    "about": "Krachym creates an Experimental Noise Pop Symphony with some synthesizers and a wireless Midi Guitar. The Leipzig (Germany) based basement crooner’s influences varies from 80s japanese electronics over psych pop and rock music which get interrupted by spontaneous actions and improvisations resulting in ambient moments or an overall diy punk spirit.",
+    "photo": "images/L1001425_nobg.png"
+  },
+  "social": {
+    "instagram": "https://www.instagram.com/krachym_/",
+    "facebook": "",
+    "spotify": "",
+    "bandcamp": "https://krachym.bandcamp.com/album/25"
+  },
+  "releases": [
+    {
+      "title": "25",
+      "year": "2025",
+      "type": "Album",
+      "cover": "images/cover-25.jpg",
+      "link": "https://krachym.bandcamp.com/album/25",
+      "bandcamp_embed_id": "734919516",
+      "description": "demo recordings with songs about love, war and animals"
+    }
+  ],
+  "photos": [
+    {
+      "src": "images/live-1.jpg",
+      "alt": "Krachym live @ FUNKEN Chemnitz"
+    },
+    {
+      "src": "images/live-2.jpg",
+      "alt": "Krachym live with MIDI guitar"
+    },
+    {
+      "src": "images/live-3.jpg",
+      "alt": "Krachym performing"
+    },
+    {
+      "src": "images/live-4.jpg",
+      "alt": "Krachym live"
+    },
+    {
+      "src": "images/L1001511.png",
+      "alt": ""
+    },
+    {
+      "src": "images/L1001417.png",
+      "alt": ""
+    },
+    {
+      "src": "images/IMG_2317.JPG",
+      "alt": ""
+    },
+    {
+      "src": "images/Screenshot 2026-03-05 224252.png",
+      "alt": ""
+    },
+    {
+      "src": "images/MurfMurw24-Krachim-29092024-JostijnLigtvoetFotografie-10.jpg",
+      "alt": ""
+    },
+    {
+      "src": "images/Krachim@Hitness Club-photo by mag_ocy.jpg",
+      "alt": ""
+    },
+    {
+      "src": "images/Krachim@Hitness Club-photo by mag_ocy2.jpg",
+      "alt": ""
+    },
+    {
+      "src": "images/IMG_2247.JPG",
+      "alt": ""
+    },
+    {
+      "src": "images/IMG_2245.JPG",
+      "alt": ""
+    }
+  ],
+  "videos": [
+    {
+      "title": "Krachym (LIVE) @ FUNKEN, Chemnitz",
+      "youtube_id": "5_HRHL5hIBI"
+    },
+    {
+      "title": "Krachym (LIVE) @ Hitness Club, Leipzig",
+      "youtube_id": "Z2Tk4h4KSvo"
+    }
+  ],
+  "shows": {
+    "upcoming": [
+      {
+        "date": "2026-05-30",
+        "venue": "Busy Hands Fest",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      }
+    ],
+    "past": [
+      {
+        "date": "2023-05-19",
+        "venue": "Tschoch",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": "",
+        "note": "+ TTT-Turbo"
+      },
+      {
+        "date": "2023-05-20",
+        "venue": "Krachathon",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2023-06-06",
+        "venue": "Galerie KUB",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": "",
+        "note": "+ Nuances D'Engrais"
+      },
+      {
+        "date": "2024-06-11",
+        "venue": "SpXlXnkX",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2024-01-01",
+        "venue": "Art Volkmarsdorf",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2024-09-29",
+        "venue": "Murw/Murf Fest",
+        "city": "Tilburg",
+        "country": "NL",
+        "tickets": "",
+        "note": "+ Omni Selassie etc"
+      },
+      {
+        "date": "2024-09-30",
+        "venue": "Hitness Club",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2024-10-10",
+        "venue": "Spelunke",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2024-11-01",
+        "venue": "Hitness Club",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2024-11-10",
+        "venue": "HP7",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2024-12-07",
+        "venue": "Zimmt",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-04-12",
+        "venue": "Ost-Passage Theater",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-05-04",
+        "venue": "Akenkalypse",
+        "city": "Aken",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-06-21",
+        "venue": "Studio 177 - Fete de la musique",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-06-21",
+        "venue": "HP7 - Fete de la musique",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-07-25",
+        "venue": "Nebenan",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-08-01",
+        "venue": "Cringefest",
+        "city": "Weimar",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-08-14",
+        "venue": "Galle",
+        "city": "Halle",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-11-21",
+        "venue": "Funken Academy",
+        "city": "Chemnitz",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-10-31",
+        "venue": "GRRRNDZERO",
+        "city": "Lyon",
+        "country": "FR",
+        "tickets": ""
+      },
+      {
+        "date": "2026-11-21",
+        "venue": "Lokomov",
+        "city": "Chemnitz",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-11-22",
+        "venue": "Tschoch",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-12-18",
+        "venue": "The Last Chance",
+        "city": "Melbourne",
+        "country": "AU",
+        "tickets": ""
+      },
+      {
+        "date": "2026-01-07",
+        "venue": "The Tote Hotel",
+        "city": "Melbourne",
+        "country": "AU",
+        "tickets": ""
+      },
+      {
+        "date": "2026-01-19",
+        "venue": "Northcote Social Club",
+        "city": "Melbourne",
+        "country": "AU",
+        "tickets": ""
+      },
+      {
+        "date": "2026-02-12",
+        "venue": "SCHTTRXXK",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-02-18",
+        "venue": "Ilses Erika",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      }
+    ]
+  },
+  "imprint": {
+    "name": "Achim Kolba",
+    "address": "Leipzig, Germany",
+    "email": "achim.kolba@hitness.club",
+    "text": ""
+  },
+  "meta": {
+    "title": "Krachym",
+    "description": "Krachym – electronic pop symphony from Leipzig",
+    "primary_color": "#8252fe",
+    "accent_color": "#07fae8",
+    "background_color": "#f40006",
+    "font": "mono",
+    "heading_scale": "xlarge",
+    "section_order": [
+      "about",
+      "photos",
+      "videos",
+      "live",
+      "releases"
+    ],
+    "sections": {
+      "about": {
+        "bg": "#8252fe",
+        "color": "#f5f500"
+      },
+      "releases": {
+        "bg": "#8252fe",
+        "color": "#f5f500"
+      },
+      "photos": {
+        "bg": "#8252fe",
+        "color": "#f5f500"
+      },
+      "videos": {
+        "bg": "#8252fe",
+        "color": "#f5f500"
+      },
+      "live": {
+        "bg": "#f40006",
+        "color": "#f5f500"
+      }
+    },
+    "effects": {
+      "checkerboard": true,
+      "flying_shapes": true,
+      "circles": true,
+      "marquee": true,
+      "glitch": true
+    },
+    "element_effects": {
+      "hero-name": [
+        "neon",
+        "invert",
+        "scanlines",
+        "blink",
+        "shake",
+        "glitch",
+        "flicker"
+      ],
+      "hero-tagline": [
+        "neon",
+        "invert",
+        "scanlines",
+        "shake"
+      ],
+      "section-titles": [
+        "shake",
+        "invert"
+      ],
+      "nav-logo": [
+        "scanlines"
+      ],
+      "marquee": [
+        "flicker",
+        "blink",
+        "neon",
+        "shake"
+      ],
+      "about-text": [
+        "glitch",
+        "neon"
+      ]
+    },
+    "nav_bg": "#8252fe",
+    "nav_color": "#f5f500",
+    "marquee_bg": "#8252fe",
+    "marquee_color": "#f5f500"
+  }
+}
