@@ -350,10 +350,6 @@
           {
             "thumb": "images/thumb_nebenan.jpg",
             "full": "images/nebenan.jpg"
-          },
-          {
-            "thumb": "images/thumb_nebenan2.jpg",
-            "full": "images/nebenan2.jpg"
           }
         ]
       },
@@ -545,10 +541,10 @@
     "heading_scale": "xlarge",
     "section_order": [
       "about",
-      "photos",
       "videos",
+      "releases",
       "live",
-      "releases"
+      "photos"
     ],
     "sections": {
       "about": {

@@ -183,6 +183,10 @@
           {
             "thumb": "images/MurfMurw24-Krachim-29092024-JostijnLigtvoetFotografie-36.jpg",
             "full": "images/MurfMurw24-Krachim-29092024-JostijnLigtvoetFotografie-36.jpg"
+          },
+          {
+            "thumb": "images/thumb_murw.jpg",
+            "full": "images/murw.jpg"
           }
         ]
       },
@@ -196,6 +200,10 @@
           {
             "thumb": "images/thumb_Hitness.jpg",
             "full": "images/Hitness.jpg"
+          },
+          {
+            "thumb": "images/thumb_IMG_2245.jpg",
+            "full": "images/IMG_2245.JPG"
           }
         ]
       },
@@ -222,6 +230,10 @@
           {
             "thumb": "images/auch untitled.jpg",
             "full": "images/auch untitled.jpg"
+          },
+          {
+            "thumb": "images/thumb_mitjohannes.jpg",
+            "full": "images/mitjohannes.jpg"
           }
         ]
       },
@@ -243,7 +255,13 @@
         "venue": "Zimmt",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_zimmt.jpg",
+            "full": "images/zimmt.jpg"
+          }
+        ]
       },
       {
         "date": "2025-03-16",
@@ -285,6 +303,10 @@
           {
             "thumb": "images/thumb_Akenkalypse 2025 Krachym_co_Nina Buttendorf.jpg",
             "full": "images/Akenkalypse 2025 Krachym_co_Nina Buttendorf.jpg"
+          },
+          {
+            "thumb": "images/thumb_akenkalypse.jpg",
+            "full": "images/akenkalypse.jpg"
           }
         ]
       },
@@ -293,7 +315,13 @@
         "venue": "Studio 177 - Fete de la musique",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_studio177.jpg",
+            "full": "images/studio177.jpg"
+          }
+        ]
       },
       {
         "date": "2025-06-21",
@@ -305,6 +333,10 @@
           {
             "thumb": "images/thumb_hp7_2.jpg",
             "full": "images/hp7_2.jpg"
+          },
+          {
+            "thumb": "images/thumb_hp7.jpg",
+            "full": "images/hp7.jpg"
           }
         ]
       },
@@ -313,14 +345,30 @@
         "venue": "Nebenan",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_nebenan.jpg",
+            "full": "images/nebenan.jpg"
+          }
+        ]
       },
       {
         "date": "2025-08-01",
         "venue": "Cringefest",
         "city": "Weimar",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_cringefest.jpg",
+            "full": "images/cringefest.jpg"
+          },
+          {
+            "thumb": "images/thumb_cringefest2.jpg",
+            "full": "images/cringefest2.jpg"
+          }
+        ]
       },
       {
         "date": "2025-08-14",
@@ -345,6 +393,22 @@
           {
             "thumb": "images/L1001607.jpg",
             "full": "images/L1001607.jpg"
+          },
+          {
+            "thumb": "images/thumb_L1001542.jpg",
+            "full": "images/L1001542.jpg"
+          },
+          {
+            "thumb": "images/thumb_L1001546_cropped.jpg",
+            "full": "images/L1001546_cropped.jpg"
+          },
+          {
+            "thumb": "images/thumb_L1001583.jpg",
+            "full": "images/L1001583.jpg"
+          },
+          {
+            "thumb": "images/thumb_L1001613.jpg",
+            "full": "images/L1001613.jpg"
           }
         ]
       },
@@ -477,10 +541,10 @@
     "heading_scale": "xlarge",
     "section_order": [
       "about",
-      "photos",
-      "videos",
+      "releases",
       "live",
-      "releases"
+      "photos",
+      "videos"
     ],
     "sections": {
       "about": {
