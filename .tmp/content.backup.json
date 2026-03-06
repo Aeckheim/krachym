@@ -24,16 +24,11 @@
   ],
   "photos": [
     {
-      "src": "images/live-1.jpg",
-      "alt": "Krachym live @ FUNKEN Chemnitz"
-    },
-    {
-      "src": "images/live-2.jpg",
-      "alt": "Krachym live with MIDI guitar"
-    },
-    {
-      "src": "images/live-3.jpg",
-      "alt": "Krachym performing"
+      "src": {
+        "path": "images/L1001451.jpg",
+        "thumb": null
+      },
+      "alt": ""
     },
     {
       "src": "images/live-4.jpg",
@@ -77,10 +72,6 @@
     },
     {
       "src": "images/IMG_2297.JPG",
-      "alt": ""
-    },
-    {
-      "src": "images/IMG_2244.JPG",
       "alt": ""
     }
   ],
@@ -541,10 +532,10 @@
     "heading_scale": "xlarge",
     "section_order": [
       "about",
+      "videos",
       "releases",
       "live",
-      "photos",
-      "videos"
+      "photos"
     ],
     "sections": {
       "about": {
