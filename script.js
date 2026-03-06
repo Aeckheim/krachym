@@ -450,6 +450,34 @@ function initCircles() {
 
 initCircles();
 
+// Releases section: slides in from right as you scroll to it
+(function() {
+  const section = document.getElementById('releases');
+  if (!section) return;
+  const inner = section.querySelector('.container');
+  if (!inner) return;
+
+  let ticking = false;
+  const update = () => {
+    const rect = section.getBoundingClientRect();
+    const vh = window.innerHeight;
+    // progress 0 = section just entering from bottom, 1 = section top at ~30% from top
+    const progress = Math.max(0, Math.min(1, (vh - rect.top) / (vh * 0.75)));
+    if (progress < 1) {
+      inner.style.transform = `translateX(${(1 - progress) * 110}vw)`;
+    } else {
+      inner.style.transform = '';
+    }
+  };
+
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { update(); ticking = false; });
+  }, { passive: true });
+  update();
+})();
+
 // Checkerboard: grows + fades, reappears + shrinks in LIVE section
 (function() {
   const el = document.getElementById('checker-bg');
