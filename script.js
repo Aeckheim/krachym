@@ -255,23 +255,21 @@ async function loadContent() {
   renderShows(c.shows.upcoming, 'shows-upcoming');
   renderShows(c.shows.past, 'shows-past');
 
-  // Mobile: activate show item closest to screen center on scroll
-  if (window.matchMedia('(hover: none)').matches) {
-    const updateActiveShow = () => {
-      const items = document.querySelectorAll('#shows-past .show-item');
-      if (!items.length) return;
-      const mid = window.innerHeight / 2;
-      let closest = null, minDist = Infinity;
-      items.forEach(el => {
-        const r = el.getBoundingClientRect();
-        const dist = Math.abs((r.top + r.bottom) / 2 - mid);
-        if (dist < minDist) { minDist = dist; closest = el; }
-      });
-      items.forEach(el => el.classList.toggle('active', el === closest));
-    };
-    window.addEventListener('scroll', updateActiveShow, { passive: true });
-    updateActiveShow();
-  }
+  // Activate show item closest to screen center on scroll (used for touch devices)
+  const updateActiveShow = () => {
+    const items = document.querySelectorAll('#shows-past .show-item');
+    if (!items.length) return;
+    const mid = window.innerHeight / 2;
+    let closest = null, minDist = Infinity;
+    items.forEach(el => {
+      const r = el.getBoundingClientRect();
+      const dist = Math.abs((r.top + r.bottom) / 2 - mid);
+      if (dist < minDist) { minDist = dist; closest = el; }
+    });
+    items.forEach(el => el.classList.toggle('active', el === closest));
+  };
+  window.addEventListener('scroll', updateActiveShow, { passive: true });
+  requestAnimationFrame(updateActiveShow);
 
   // Next gig in marquee — must insert into BOTH halves (animation moves -50% of track width)
   const today = new Date(); today.setHours(0,0,0,0);
