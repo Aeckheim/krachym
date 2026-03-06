@@ -450,24 +450,37 @@ function initCircles() {
 
 initCircles();
 
-// Releases section: slides in from right as you scroll to it
+// Releases section: scroll-hijack — slides in from right while vertical scroll pauses
 (function() {
   const section = document.getElementById('releases');
   if (!section) return;
   const inner = section.querySelector('.container');
   if (!inner) return;
 
+  // Wrap section in a tall driver div to absorb scroll
+  const wrapper = document.createElement('div');
+  wrapper.className = 'releases-wrapper';
+  section.parentNode.insertBefore(wrapper, section);
+  wrapper.appendChild(section);
+
+  // Set wrapper height = section height + 1 viewport of "scroll budget"
+  const setHeight = () => {
+    section.style.position = '';
+    wrapper.style.height = '';
+    const sh = section.offsetHeight;
+    wrapper.style.height = sh + window.innerHeight + 'px';
+    section.style.position = 'sticky';
+    section.style.top = '0';
+  };
+  setHeight();
+  window.addEventListener('resize', setHeight);
+
   let ticking = false;
   const update = () => {
-    const rect = section.getBoundingClientRect();
-    const vh = window.innerHeight;
-    // progress 0 = section just entering from bottom, 1 = section top at ~30% from top
-    const progress = Math.max(0, Math.min(1, (vh - rect.top) / (vh * 0.75)));
-    if (progress < 1) {
-      inner.style.transform = `translateX(${(1 - progress) * 110}vw)`;
-    } else {
-      inner.style.transform = '';
-    }
+    const wTop = wrapper.getBoundingClientRect().top;
+    const scrolled = -wTop; // px scrolled into wrapper
+    const progress = Math.max(0, Math.min(1, scrolled / window.innerHeight));
+    inner.style.transform = progress < 1 ? `translateX(${(1 - progress) * 110}vw)` : '';
   };
 
   window.addEventListener('scroll', () => {
