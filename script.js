@@ -417,8 +417,11 @@ function initCircles() {
         layers.forEach(({ el, vy }) => {
           if (el) el.style.transform = `translateY(${y * vy * 0.5}px)`;
         });
-        // Fade out starting at 70% of hero height, gone at 130%
-        const fade = Math.max(0, 1 - (y - heroH * 0.7) / (heroH * 0.6));
+        // Fade out: half visible in videos section, gone after it
+        const videosEl = document.getElementById('videos');
+        const fadeStart = videosEl ? videosEl.offsetTop : heroH * 3;
+        const fadeEnd = videosEl ? videosEl.offsetTop + videosEl.offsetHeight : heroH * 5;
+        const fade = Math.max(0, 1 - (y - fadeStart) / (fadeEnd - fadeStart));
         if (circlesEl) circlesEl.style.opacity = Math.min(1, fade);
         ticking = false;
       });
