@@ -899,6 +899,7 @@ a { color: inherit; text-decoration: none; }
   border-right: var(--border);
   border-bottom: var(--border);
   display: block;
+  image-rendering: auto;
 }
 .photos-grid img:hover {
   filter: grayscale(0%) contrast(1.05);
