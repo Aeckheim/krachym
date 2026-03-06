@@ -401,15 +401,27 @@ function initCircles() {
     el: document.querySelector(selector), vy, triggerAt, shown: false
   }));
 
-  // On mobile: reveal immediately, fade out as user scrolls past hero
+  // On mobile: parallax at reduced speeds + fade out after hero
   if (isMobile) {
     layers.forEach(({ el }) => { if (el) el.classList.add('visible'); });
     const hero = document.getElementById('top');
     const circlesEl = document.querySelector('.deco-circles');
+    let ticking = false;
     window.addEventListener('scroll', () => {
-      const heroH = hero ? hero.offsetHeight : window.innerHeight;
-      const fade = Math.max(0, 1 - window.scrollY / (heroH * 0.6));
-      if (circlesEl) circlesEl.style.opacity = fade;
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const heroH = hero ? hero.offsetHeight : window.innerHeight;
+        // Parallax movement at each circle's own speed
+        layers.forEach(({ el, vy }) => {
+          if (el) el.style.transform = `translateY(${y * vy * 0.5}px)`;
+        });
+        // Fade out starting at 70% of hero height, gone at 130%
+        const fade = Math.max(0, 1 - (y - heroH * 0.7) / (heroH * 0.6));
+        if (circlesEl) circlesEl.style.opacity = Math.min(1, fade);
+        ticking = false;
+      });
     }, { passive: true });
     return;
   }
