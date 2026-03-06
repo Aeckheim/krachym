@@ -401,9 +401,16 @@ function initCircles() {
     el: document.querySelector(selector), vy, triggerAt, shown: false
   }));
 
-  // On mobile: just reveal, no parallax movement
+  // On mobile: reveal immediately, fade out as user scrolls past hero
   if (isMobile) {
     layers.forEach(({ el }) => { if (el) el.classList.add('visible'); });
+    const hero = document.getElementById('top');
+    const circlesEl = document.querySelector('.deco-circles');
+    window.addEventListener('scroll', () => {
+      const heroH = hero ? hero.offsetHeight : window.innerHeight;
+      const fade = Math.max(0, 1 - window.scrollY / (heroH * 0.6));
+      if (circlesEl) circlesEl.style.opacity = fade;
+    }, { passive: true });
     return;
   }
 
