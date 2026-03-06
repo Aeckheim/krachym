@@ -1,5 +1,10 @@
 // Loads content.json and populates the page dynamically
 
+// Reliable touch detection — CSS media queries are unreliable on Android Chrome
+if (navigator.maxTouchPoints > 0) {
+  document.body.classList.add('touch');
+}
+
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 function lighten(hex, amt) {

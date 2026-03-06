@@ -1029,13 +1029,11 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer;
   flex-shrink: 0;
 }
-@media (hover: hover) {
-  .show-item:hover .show-photo {
-    opacity: 1;
-    transform: scale(1);
-    width: 40px;
-    pointer-events: auto;
-  }
+body:not(.touch) .show-item:hover .show-photo {
+  opacity: 1;
+  transform: scale(1);
+  width: 40px;
+  pointer-events: auto;
 }
 .show-photo img {
   width: 40px;
@@ -1240,26 +1238,17 @@ a { color: inherit; text-decoration: none; }
   .videos-grid { grid-template-columns: 1fr; }
   .video-card { border-right: none; border-bottom: var(--border); }
 }
-/* Touch/mobile: photos appear on the .active item (set via JS scroll detection) */
-@media (hover: none), (pointer: coarse) {
-  .show-photo {
-    opacity: 0;
-    transform: scale(0.4);
-    width: 0;
-    pointer-events: none;
-    transition: opacity 0.3s, transform 0.3s, width 0.3s;
-  }
-  .show-item.active .show-photo {
-    opacity: 1;
-    transform: scale(1);
-    width: 36px;
-    height: 36px;
-    pointer-events: auto;
-  }
-  .show-item.active .show-photo img { width: 36px; height: 36px; }
-  .shows-list-past .show-item { opacity: 0.5; }
-  .shows-list-past .show-item.active { opacity: 1; }
+/* Touch devices: photos appear on .active item (JS scroll detection), dimmed otherwise */
+body.touch .show-item.active .show-photo {
+  opacity: 1;
+  transform: scale(1);
+  width: 36px;
+  height: 36px;
+  pointer-events: auto;
 }
+body.touch .show-item.active .show-photo img { width: 36px; height: 36px; }
+body.touch .shows-list-past .show-item { opacity: 0.5; }
+body.touch .shows-list-past .show-item.active { opacity: 1; }
 
 @media (max-width: 640px) {
   .container { padding: 0 1.25rem; }
