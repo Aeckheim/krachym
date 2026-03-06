@@ -255,10 +255,17 @@ async function loadContent() {
   renderShows(c.shows.upcoming, 'shows-upcoming');
   renderShows(c.shows.past, 'shows-past');
 
-  // Activate show item closest to screen center on scroll (used for touch devices)
+  // Activate show item closest to screen center on scroll (touch devices only)
   const updateActiveShow = () => {
     const items = document.querySelectorAll('#shows-past .show-item');
     if (!items.length) return;
+    const section = document.getElementById('shows-past');
+    const sr = section.getBoundingClientRect();
+    // Clear active when section is out of view
+    if (sr.bottom < 0 || sr.top > window.innerHeight) {
+      items.forEach(el => el.classList.remove('active'));
+      return;
+    }
     const mid = window.innerHeight / 2;
     let closest = null, minDist = Infinity;
     items.forEach(el => {
