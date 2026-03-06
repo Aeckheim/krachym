@@ -347,7 +347,7 @@ a { color: inherit; text-decoration: none; }
 #about   .section-title { color: #f5f500; }
 #about   .about-text p { color: rgba(245,245,0,0.85); }
 
-#releases{ background: var(--blue);   color: #f5f500; --border: 2px solid #f5f500; --shadow: 6px 6px 0 #f5f500; overflow: hidden; }
+#releases{ background: var(--blue);   color: #f5f500; --border: 2px solid #f5f500; --shadow: 6px 6px 0 #f5f500; }
 #releases .section-title { color: #f5f500; font-size: calc(clamp(2rem, 5vw, 3.5rem) * var(--heading-scale, 1)); }
 #releases .release-title { color: #f5f500; }
 #releases .release-meta  { color: rgba(245,245,0,0.4); }
@@ -899,7 +899,6 @@ a { color: inherit; text-decoration: none; }
   border-right: var(--border);
   border-bottom: var(--border);
   display: block;
-  image-rendering: auto;
 }
 .photos-grid img:hover {
   filter: grayscale(0%) contrast(1.05);
@@ -1239,15 +1238,17 @@ body:not(.touch) .show-item:hover .show-photo {
   .videos-grid { grid-template-columns: 1fr; }
   .video-card { border-right: none; border-bottom: var(--border); }
 }
-/* Touch devices: circles always visible, small and tappable */
-body.touch .show-photo {
+/* Touch devices: photos appear on .active item (JS scroll detection), dimmed otherwise */
+body.touch .show-item.active .show-photo {
   opacity: 1;
   transform: scale(1);
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   pointer-events: auto;
 }
-body.touch .show-photo img { width: 30px; height: 30px; }
+body.touch .show-item.active .show-photo img { width: 36px; height: 36px; }
+body.touch .shows-list-past .show-item { opacity: 0.5; }
+body.touch .shows-list-past .show-item.active { opacity: 1; }
 
 @media (max-width: 640px) {
   .container { padding: 0 1.25rem; }
