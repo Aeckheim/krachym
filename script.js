@@ -261,13 +261,13 @@ async function loadContent() {
   renderShows(c.shows.past, 'shows-past');
 
   // Activate show item closest to screen center on scroll (touch devices only)
+  const showsPastEl = document.getElementById('shows-past');
+  let showsSectionVisible = false;
+
   const updateActiveShow = () => {
     const items = document.querySelectorAll('#shows-past .show-item');
     if (!items.length) return;
-    const section = document.getElementById('shows-past');
-    const sr = section.getBoundingClientRect();
-    // Clear active when section is out of view
-    if (sr.bottom < 0 || sr.top > window.innerHeight) {
+    if (!showsSectionVisible) {
       items.forEach(el => el.classList.remove('active'));
       return;
     }
@@ -280,8 +280,13 @@ async function loadContent() {
     });
     items.forEach(el => el.classList.toggle('active', el === closest));
   };
+
+  new IntersectionObserver(entries => {
+    showsSectionVisible = entries[0].isIntersecting;
+    updateActiveShow();
+  }, { threshold: 0.05 }).observe(showsPastEl);
+
   window.addEventListener('scroll', updateActiveShow, { passive: true });
-  requestAnimationFrame(updateActiveShow);
 
   // Next gig in marquee — must insert into BOTH halves (animation moves -50% of track width)
   const today = new Date(); today.setHours(0,0,0,0);
