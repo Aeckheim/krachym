@@ -1077,8 +1077,48 @@ function renderShows(type) {
         <div class="field"><label>Country Code (e.g. DE)</label><input value="${s.country||''}" maxlength="3" oninput="data.shows.${type}[${i}].country=this.value" /></div>
         <div class="field"><label>Tickets URL (optional)</label><input type="url" value="${s.tickets||''}" oninput="data.shows.${type}[${i}].tickets=this.value" /></div>
       </div>
+      ${type === 'past' ? `
+      <div class="field" style="margin-top:0.5rem">
+        <label>Fotos (erscheinen beim Hovern)</label>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;margin-top:0.4rem">
+          ${(s.photos || []).map((p, pi) => `
+            <div style="position:relative">
+              <img src="${p.thumb}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid rgba(245,245,0,0.3)">
+              <button class="btn btn-danger btn-sm" onclick="removeShowPhoto('${type}',${i},${pi})" style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;padding:0;font-size:10px;border-radius:50%;line-height:1">✕</button>
+            </div>
+          `).join('')}
+          <label style="cursor:pointer;border:1px dashed rgba(245,245,0,0.3);width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:rgba(245,245,0,0.5)">
+            +<input type="file" accept="image/*" multiple style="display:none" onchange="uploadShowPhoto(event,'${type}',${i})">
+          </label>
+        </div>
+      </div>` : ''}
     </div>
   `).join('');
+}
+
+async function uploadShowPhoto(event, type, i) {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+  if (!data.shows[type][i].photos) data.shows[type][i].photos = [];
+  for (const file of files) {
+    const fd = new FormData();
+    fd.append('file', file);
+    try {
+      const res = await fetch('/upload?thumb=1', { method: 'POST', body: fd });
+      const json = await res.json();
+      const r = json.paths[0];
+      data.shows[type][i].photos.push({ thumb: r.thumb || r.path, full: r.path });
+    } catch(e) {
+      showToast('Upload fehlgeschlagen: ' + file.name);
+    }
+  }
+  renderShows(type);
+  showToast('Fotos gespeichert');
+}
+
+function removeShowPhoto(type, i, pi) {
+  data.shows[type][i].photos.splice(pi, 1);
+  renderShows(type);
 }
 
 function addShow(type) {

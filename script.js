@@ -233,11 +233,17 @@ async function loadContent() {
       el.innerHTML = `<p class="no-shows">No shows listed.</p>`;
       return;
     }
-    el.innerHTML = shows.map(s => `
+    const sorted = containerId === 'shows-past'
+      ? [...shows].sort((a, b) => (b.date || '') < (a.date || '') ? -1 : 1)
+      : shows;
+    el.innerHTML = sorted.map(s => `
       <div class="show-item">
         <div class="show-date">${formatDate(s.date)}</div>
         <div class="show-info">
-          <div class="show-venue">${s.venue}${s.note ? ' <span class="show-note">' + s.note + '</span>' : ''}</div>
+          <div class="show-venue-row">
+            <span class="show-venue-text">${s.venue}${s.note ? ' <span class="show-note">' + s.note + '</span>' : ''}</span>
+            ${(s.photos || []).map((p, pi) => `<div class="show-photo" onclick="openLightbox('${p.full || p.thumb}')"><img src="${p.thumb}" alt="${s.venue} ${pi+1}" loading="lazy"></div>`).join('')}
+          </div>
           <div class="show-city">${s.city}${s.country ? ', ' + s.country : ''}</div>
         </div>
         <div class="show-tickets">
@@ -272,8 +278,13 @@ async function loadContent() {
   document.getElementById('imprint-content').innerHTML = `
     <p>${imp.name}</p>
     <p>${imp.address}</p>
-    <p><a href="mailto:${imp.email}">${imp.email}</a></p>
     ${imp.text ? `<p style="margin-top:1rem">${imp.text}</p>` : ''}
+    <form class="contact-form" onsubmit="sendContactForm(event,'${imp.email}')">
+      <input type="text" name="name" placeholder="Name" required>
+      <input type="email" name="from" placeholder="Deine E-Mail" required>
+      <textarea name="message" placeholder="Nachricht" rows="4" required></textarea>
+      <button type="submit">Senden</button>
+    </form>
   `;
 }
 
@@ -295,17 +306,6 @@ document.querySelectorAll('.nav-links a').forEach(a => {
 });
 
 
-// Lightbox
-const lb = document.createElement('div');
-lb.className = 'lightbox';
-lb.innerHTML = '<img />';
-lb.addEventListener('click', () => lb.classList.remove('open'));
-document.body.appendChild(lb);
-
-function openLightbox(src) {
-  lb.querySelector('img').src = src;
-  lb.classList.add('open');
-}
 
 // Scroll reveal (IntersectionObserver)
 const revealObserver = new IntersectionObserver((entries) => {
@@ -421,3 +421,26 @@ initCircles();
   }
   window.addEventListener('scroll', update, { passive: true });
 })();
+
+function sendContactForm(e, toEmail) {
+  e.preventDefault();
+  const f = e.target;
+  const name = f.name.value;
+  const from = f.from.value;
+  const msg = f.message.value;
+  const subject = encodeURIComponent(`Kontakt von ${name}`);
+  const body = encodeURIComponent(`Von: ${name} <${from}>\n\n${msg}`);
+  window.location.href = `mailto:${toEmail}?subject=${subject}&body=${body}`;
+}
+
+function openLightbox(src) {
+  const lb = document.getElementById('lightbox');
+  document.getElementById('lightbox-img').src = src;
+  lb.style.display = 'flex';
+  document.addEventListener('keydown', closeLightboxOnEsc);
+}
+function closeLightbox() {
+  document.getElementById('lightbox').style.display = 'none';
+  document.removeEventListener('keydown', closeLightboxOnEsc);
+}
+function closeLightboxOnEsc(e) { if (e.key === 'Escape') closeLightbox(); }

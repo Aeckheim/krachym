@@ -40,11 +40,11 @@
       "alt": "Krachym live"
     },
     {
-      "src": "images/L1001511.png",
+      "src": "images/L1001511.jpg",
       "alt": ""
     },
     {
-      "src": "images/L1001417.png",
+      "src": "images/L1001417.jpg",
       "alt": ""
     },
     {
@@ -73,6 +73,14 @@
     },
     {
       "src": "images/IMG_2245.JPG",
+      "alt": ""
+    },
+    {
+      "src": "images/IMG_2297.JPG",
+      "alt": ""
+    },
+    {
+      "src": "images/IMG_2244.JPG",
       "alt": ""
     }
   ],
@@ -103,14 +111,26 @@
         "city": "Leipzig",
         "country": "DE",
         "tickets": "",
-        "note": "+ TTT-Turbo"
+        "note": "+ TTT-Turbo",
+        "photos": [
+          {
+            "thumb": "images/Screenshot 2026-03-06 203346.png",
+            "full": "images/Screenshot 2026-03-06 203346.png"
+          }
+        ]
       },
       {
         "date": "2023-05-20",
         "venue": "Krachathon",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_krachathon.jpg",
+            "full": "images/krachathon.jpg"
+          }
+        ]
       },
       {
         "date": "2023-06-06",
@@ -118,21 +138,39 @@
         "city": "Leipzig",
         "country": "DE",
         "tickets": "",
-        "note": "+ Nuances D'Engrais"
+        "note": "+ Nuances D'Engrais",
+        "photos": [
+          {
+            "thumb": "images/kub_teddy.jpg",
+            "full": "images/kub_teddy.jpg"
+          }
+        ]
       },
       {
         "date": "2024-06-11",
         "venue": "SpXlXnkX",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_spelunke.jpg",
+            "full": "images/spelunke.jpg"
+          }
+        ]
       },
       {
         "date": "2024-01-01",
         "venue": "Art Volkmarsdorf",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/SaveGram.App_460679436_1016063476982913_7234604962999272342_n.jpg",
+            "full": "images/SaveGram.App_460679436_1016063476982913_7234604962999272342_n.jpg"
+          }
+        ]
       },
       {
         "date": "2024-09-29",
@@ -140,35 +178,65 @@
         "city": "Tilburg",
         "country": "NL",
         "tickets": "",
-        "note": "+ Omni Selassie etc"
+        "note": "+ Omni Selassie etc",
+        "photos": [
+          {
+            "thumb": "images/MurfMurw24-Krachim-29092024-JostijnLigtvoetFotografie-36.jpg",
+            "full": "images/MurfMurw24-Krachim-29092024-JostijnLigtvoetFotografie-36.jpg"
+          }
+        ]
       },
       {
         "date": "2024-09-30",
         "venue": "Hitness Club",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_Hitness.jpg",
+            "full": "images/Hitness.jpg"
+          }
+        ]
       },
       {
         "date": "2024-10-10",
-        "venue": "Spelunke",
+        "venue": "SpXXXXke",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_sXpXlXkX.jpg",
+            "full": "images/sXpXlXkX.jpg"
+          }
+        ]
       },
       {
         "date": "2024-11-01",
         "venue": "Hitness Club",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/auch untitled.jpg",
+            "full": "images/auch untitled.jpg"
+          }
+        ]
       },
       {
         "date": "2024-11-10",
         "venue": "HP7",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/IMG_2298.JPG",
+            "full": "images/IMG_2298.JPG"
+          }
+        ]
       },
       {
         "date": "2024-12-07",
@@ -178,109 +246,198 @@
         "tickets": ""
       },
       {
-        "date": "2026-04-12",
+        "date": "2025-03-16",
+        "venue": "Ränch",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_poster_ranch.jpg",
+            "full": "images/poster_ranch.jpg"
+          },
+          {
+            "thumb": "images/thumb_ränch.jpg",
+            "full": "images/ränch.jpg"
+          }
+        ]
+      },
+      {
+        "date": "2025-04-12",
         "venue": "Ost-Passage Theater",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_OPT.jpg",
+            "full": "images/OPT.jpg"
+          }
+        ]
       },
       {
-        "date": "2026-05-04",
+        "date": "2025-05-04",
         "venue": "Akenkalypse",
         "city": "Aken",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_Akenkalypse 2025 Krachym_co_Nina Buttendorf.jpg",
+            "full": "images/Akenkalypse 2025 Krachym_co_Nina Buttendorf.jpg"
+          }
+        ]
       },
       {
-        "date": "2026-06-21",
+        "date": "2025-06-21",
         "venue": "Studio 177 - Fete de la musique",
         "city": "Leipzig",
         "country": "DE",
         "tickets": ""
       },
       {
-        "date": "2026-06-21",
+        "date": "2025-06-21",
         "venue": "HP7 - Fete de la musique",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_hp7_2.jpg",
+            "full": "images/hp7_2.jpg"
+          }
+        ]
       },
       {
-        "date": "2026-07-25",
+        "date": "2025-07-25",
         "venue": "Nebenan",
         "city": "Leipzig",
         "country": "DE",
         "tickets": ""
       },
       {
-        "date": "2026-08-01",
+        "date": "2025-08-01",
         "venue": "Cringefest",
         "city": "Weimar",
         "country": "DE",
         "tickets": ""
       },
       {
-        "date": "2026-08-14",
-        "venue": "Galle",
+        "date": "2025-08-14",
+        "venue": "GalXX",
         "city": "Halle",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_galxx.jpg",
+            "full": "images/galxx.jpg"
+          }
+        ]
       },
       {
-        "date": "2026-11-21",
+        "date": "2025-11-21",
         "venue": "Funken Academy",
         "city": "Chemnitz",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/L1001607.jpg",
+            "full": "images/L1001607.jpg"
+          }
+        ]
       },
       {
-        "date": "2026-10-31",
+        "date": "2025-10-31",
         "venue": "GRRRNDZERO",
         "city": "Lyon",
         "country": "FR",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_grrrndzero.jpg",
+            "full": "images/grrrndzero.jpg"
+          }
+        ]
       },
       {
-        "date": "2026-11-21",
+        "date": "2025-11-21",
         "venue": "Lokomov",
         "city": "Chemnitz",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_lokomov.jpg",
+            "full": "images/lokomov.jpg"
+          }
+        ]
       },
       {
-        "date": "2026-11-22",
+        "date": "2025-11-22",
         "venue": "Tschoch",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_tschoch2.jpg",
+            "full": "images/tschoch2.jpg"
+          }
+        ]
       },
       {
-        "date": "2026-12-18",
+        "date": "2025-12-18",
         "venue": "The Last Chance",
         "city": "Melbourne",
         "country": "AU",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_lastchance_melbourne-print_7pm.jpg",
+            "full": "images/lastchance_melbourne-print_7pm.jpg"
+          }
+        ]
       },
       {
         "date": "2026-01-07",
         "venue": "The Tote Hotel",
         "city": "Melbourne",
         "country": "AU",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_totehotel.jpg",
+            "full": "images/totehotel.jpg"
+          }
+        ]
       },
       {
         "date": "2026-01-19",
         "venue": "Northcote Social Club",
         "city": "Melbourne",
         "country": "AU",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_socialclub.jpg",
+            "full": "images/socialclub.jpg"
+          }
+        ]
       },
       {
         "date": "2026-02-12",
         "venue": "SCHTTRXXK",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_schtreik.jpg",
+            "full": "images/schtreik.jpg"
+          }
+        ]
       },
       {
         "date": "2026-02-18",
@@ -288,11 +445,24 @@
         "city": "Leipzig",
         "country": "DE",
         "tickets": ""
+      },
+      {
+        "date": "2025-03-14",
+        "venue": "West Germany",
+        "city": "Berlin",
+        "country": "DE",
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_westgermany.jpg",
+            "full": "images/westgermany.jpg"
+          }
+        ]
       }
     ]
   },
   "imprint": {
-    "name": "Achim Kolba",
+    "name": "Achim Kohlbär",
     "address": "Leipzig, Germany",
     "email": "achim.kolba@hitness.club",
     "text": ""
