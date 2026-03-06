@@ -1029,11 +1029,13 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer;
   flex-shrink: 0;
 }
-.show-item:hover .show-photo {
-  opacity: 1;
-  transform: scale(1);
-  width: 40px;
-  pointer-events: auto;
+@media (hover: hover) {
+  .show-item:hover .show-photo {
+    opacity: 1;
+    transform: scale(1);
+    width: 40px;
+    pointer-events: auto;
+  }
 }
 .show-photo img {
   width: 40px;
