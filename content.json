@@ -24,10 +24,7 @@
   ],
   "photos": [
     {
-      "src": {
-        "path": "images/L1001451.jpg",
-        "thumb": null
-      },
+      "src": "images/L1001451.jpg",
       "alt": ""
     },
     {
