@@ -957,8 +957,9 @@ async function uploadPhotos(files) {
       const paths = json.paths || [];
       if (!data.photos) data.photos = [];
       paths.forEach(p => {
-        if (!data.photos.find(x => x.src === p)) {
-          data.photos.push({ src: p, alt: '' });
+        const src = typeof p === 'string' ? p : p.path;
+        if (!data.photos.find(x => x.src === src)) {
+          data.photos.push({ src, alt: '' });
         }
       });
       renderPhotos();
