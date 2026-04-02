@@ -85,13 +85,6 @@
   "shows": {
     "upcoming": [
       {
-        "date": "2026-05-30",
-        "venue": "Busy Hands Fest",
-        "city": "Leipzig",
-        "country": "DE",
-        "tickets": ""
-      },
-      {
         "date": "2026-04-10",
         "venue": "Temporarium",
         "city": "Leipzig",
@@ -101,6 +94,13 @@
       {
         "date": "2026-04-25",
         "venue": "Box Gym West",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-05-30",
+        "venue": "Busy Hands Fest",
         "city": "Leipzig",
         "country": "DE",
         "tickets": ""
