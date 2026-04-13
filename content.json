@@ -97,6 +97,27 @@
         "city": "Leipzig",
         "country": "DE",
         "tickets": ""
+      },
+      {
+        "date": "2026-06-13",
+        "venue": "Villa Kuriosum",
+        "city": "Berlin",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-06-17",
+        "venue": "Chez Heinz",
+        "city": "Hannover",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-06-27",
+        "venue": "Kultur im Bunker",
+        "city": "Bremen",
+        "country": "DE",
+        "tickets": ""
       }
     ],
     "past": [
