@@ -245,8 +245,30 @@
       <a onclick="showTab('builder')">Builder</a>
       <a onclick="showTab('design')">SEO &amp; Meta</a>
     </nav>
-    <div class="sidebar-footer">Save → refresh website</div>
+    <div class="sidebar-footer">
+      <button class="btn btn-ghost btn-sm" onclick="openGhSettings()" style="width:100%;text-align:left;">⚙ GitHub Token</button>
+    </div>
   </aside>
+
+  <!-- GitHub Settings Modal -->
+  <div id="gh-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:8px;padding:2rem;width:90%;max-width:460px;">
+      <h2 style="font-size:1rem;margin-bottom:1rem;">GitHub Token</h2>
+      <p style="font-size:0.85rem;color:#666;margin-bottom:1rem;">Wird nur lokal im Browser gespeichert. Nötig um vom Handy zu speichern.</p>
+      <div class="field">
+        <label>Token (ghp_...)</label>
+        <input id="gh-token-input" type="password" placeholder="ghp_..." style="font-family:monospace;" />
+      </div>
+      <div class="field">
+        <label>Repo (owner/name)</label>
+        <input id="gh-repo-input" type="text" placeholder="Aeckheim/krachym" />
+      </div>
+      <div style="display:flex;gap:0.75rem;margin-top:1rem;">
+        <button class="btn btn-primary" onclick="saveGhSettings()">Speichern</button>
+        <button class="btn btn-ghost" onclick="closeGhSettings()">Abbrechen</button>
+      </div>
+    </div>
+  </div>
 
   <!-- MAIN -->
   <div class="main">
@@ -1222,6 +1244,8 @@ function collectData() {
 
 async function saveAll() {
   collectData();
+
+  // Try local server first
   try {
     const res = await fetch('/save', {
       method: 'POST',
@@ -1229,19 +1253,61 @@ async function saveAll() {
       body: JSON.stringify(data, null, 2)
     });
     if (res.ok) {
-      toast('Saved successfully!');
-    } else {
-      toast('Save failed – server error', true);
+      toast('Saved & deployed!');
+      return;
     }
-  } catch(e) {
-    // Fallback: download JSON if no server
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'content.json';
-    a.click();
-    toast('Downloaded content.json (no server running)');
+  } catch(e) { /* no local server – fall through to GitHub API */ }
+
+  // Fallback: GitHub API
+  const token = localStorage.getItem('gh_token');
+  const repo  = localStorage.getItem('gh_repo') || 'Aeckheim/krachym';
+  if (!token) {
+    openGhSettings();
+    toast('Bitte GitHub Token eingeben', true);
+    return;
   }
+  try {
+    toast('Speichern via GitHub…');
+    const apiUrl = `https://api.github.com/repos/${repo}/contents/content.json`;
+    // Get current SHA
+    const info = await fetch(apiUrl, {
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (!info.ok) throw new Error('GitHub API: ' + info.status);
+    const { sha } = await info.json();
+    // Commit new content
+    const body = JSON.stringify({
+      message: 'Update content',
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2)))),
+      sha
+    });
+    const put = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body
+    });
+    if (!put.ok) throw new Error('GitHub commit: ' + put.status);
+    toast('Gespeichert! Live in ~1 Min.');
+  } catch(e) {
+    toast('Fehler: ' + e.message, true);
+  }
+}
+
+function openGhSettings() {
+  document.getElementById('gh-token-input').value = localStorage.getItem('gh_token') || '';
+  document.getElementById('gh-repo-input').value  = localStorage.getItem('gh_repo')  || 'Aeckheim/krachym';
+  document.getElementById('gh-modal').style.display = 'flex';
+}
+function closeGhSettings() {
+  document.getElementById('gh-modal').style.display = 'none';
+}
+function saveGhSettings() {
+  const token = document.getElementById('gh-token-input').value.trim();
+  const repo  = document.getElementById('gh-repo-input').value.trim();
+  if (token) localStorage.setItem('gh_token', token);
+  if (repo)  localStorage.setItem('gh_repo',  repo);
+  closeGhSettings();
+  toast('Token gespeichert');
 }
 
 function toast(msg, isError = false) {
