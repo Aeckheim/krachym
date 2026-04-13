@@ -1276,16 +1276,21 @@ async function saveAll() {
     if (!info.ok) throw new Error('GitHub API: ' + info.status);
     const { sha } = await info.json();
     // Commit new content
-    const body = JSON.stringify({
-      message: 'Update content',
-      content: btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2)))),
-      sha
-    });
-    const put = await fetch(apiUrl, {
-      method: 'PUT',
-      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body
-    });
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    const doCommit = async (currentSha) => {
+      return fetch(apiUrl, {
+        method: 'PUT',
+        headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Update content', content: encoded, sha: currentSha })
+      });
+    };
+    let put = await doCommit(sha);
+    if (put.status === 409) {
+      // SHA stale – re-fetch and retry once
+      const retry = await fetch(apiUrl, { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } });
+      const { sha: freshSha } = await retry.json();
+      put = await doCommit(freshSha);
+    }
     if (!put.ok) throw new Error('GitHub commit: ' + put.status);
     toast('Gespeichert! Live in ~1 Min.');
   } catch(e) {
