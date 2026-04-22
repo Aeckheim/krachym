@@ -118,6 +118,13 @@
         "city": "Bremen",
         "country": "DE",
         "tickets": ""
+      },
+      {
+        "date": "2026-06-26",
+        "venue": "Volksbad",
+        "city": "Flensburg",
+        "country": "DE",
+        "tickets": ""
       }
     ],
     "past": [
