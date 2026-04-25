@@ -85,13 +85,6 @@
   "shows": {
     "upcoming": [
       {
-        "date": "2026-04-10",
-        "venue": "Temporarium",
-        "city": "Leipzig",
-        "country": "DE",
-        "tickets": ""
-      },
-      {
         "date": "2026-05-30",
         "venue": "Busy Hands Fest",
         "city": "Leipzig",
@@ -113,16 +106,16 @@
         "tickets": ""
       },
       {
-        "date": "2026-06-27",
-        "venue": "Kultur im Bunker",
-        "city": "Bremen",
+        "date": "2026-06-26",
+        "venue": "Volksbad",
+        "city": "Flensburg",
         "country": "DE",
         "tickets": ""
       },
       {
-        "date": "2026-06-26",
-        "venue": "Volksbad",
-        "city": "Flensburg",
+        "date": "2026-06-27",
+        "venue": "Kultur im Bunker",
+        "city": "Bremen",
         "country": "DE",
         "tickets": ""
       }
@@ -543,6 +536,31 @@
           {
             "thumb": "images/thumb_westgermany.jpg",
             "full": "images/westgermany.jpg"
+          }
+        ]
+      },
+      {
+        "date": "2026-04-10",
+        "venue": "Temporarium",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": "",
+        "photos": [
+          {
+            "thumb": "images/thumb_temorarium poster.jpg",
+            "full": "images/temorarium poster.jpg"
+          },
+          {
+            "thumb": "images/thumb_temporarium.jpg",
+            "full": "images/temporarium.jpg"
+          },
+          {
+            "thumb": "images/thumb_photo_2_2026-04-25_09-14-54.jpg",
+            "full": "images/photo_2_2026-04-25_09-14-54.jpg"
+          },
+          {
+            "thumb": "images/thumb_photo_5_2026-04-25_09-14-54.jpg",
+            "full": "images/photo_5_2026-04-25_09-14-54.jpg"
           }
         ]
       }
