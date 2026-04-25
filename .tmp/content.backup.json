@@ -74,23 +74,16 @@
   ],
   "videos": [
     {
-      "title": "Krachym (LIVE) @ FUNKEN, Chemnitz",
-      "youtube_id": "5_HRHL5hIBI"
+      "title": "Krachym (LIVE) @ Last Chance, Melbourne, VIC",
+      "youtube_id": "Kv13GBoH4vE"
     },
     {
-      "title": "Krachym (LIVE) @ Hitness Club, Leipzig",
-      "youtube_id": "Z2Tk4h4KSvo"
+      "title": "Krachym (LIVE) @ FUNKEN, Chemnitz",
+      "youtube_id": "5_HRHL5hIBI"
     }
   ],
   "shows": {
     "upcoming": [
-      {
-        "date": "2026-05-30",
-        "venue": "Busy Hands Fest",
-        "city": "Leipzig",
-        "country": "DE",
-        "tickets": ""
-      },
       {
         "date": "2026-04-10",
         "venue": "Temporarium",
@@ -99,9 +92,37 @@
         "tickets": ""
       },
       {
-        "date": "2026-04-25",
-        "venue": "Box Gym West",
+        "date": "2026-05-30",
+        "venue": "Busy Hands Fest",
         "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-06-13",
+        "venue": "Villa Kuriosum",
+        "city": "Berlin",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-06-17",
+        "venue": "Chez Heinz",
+        "city": "Hannover",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-06-27",
+        "venue": "Kultur im Bunker",
+        "city": "Bremen",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-06-26",
+        "venue": "Volksbad",
+        "city": "Flensburg",
         "country": "DE",
         "tickets": ""
       }
@@ -543,8 +564,8 @@
     "heading_scale": "xlarge",
     "section_order": [
       "about",
-      "videos",
       "releases",
+      "videos",
       "live",
       "photos"
     ],
