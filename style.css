@@ -643,10 +643,28 @@ a { color: inherit; text-decoration: none; }
   50%      { width: 70px; opacity: 0.7; }
 }
 
+/* ── UPCOMING SHOW PHOTOS ─────────────────────────────────── */
+.upcoming-photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.upcoming-photos-grid img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+  border: 2px solid rgba(245,245,0,0.2);
+}
+.upcoming-photos-grid img:hover { opacity: 0.85; transform: scale(1.02); }
+
 /* ── HERO UPCOMING SHOWS STRIP ────────────────────────────── */
 .hero-shows-strip {
   background: var(--text);
-  color: var(--bg);
+  color: var(--text); /* overridden by script.js with nav_color */
   padding: 0.75rem 2rem;
   display: flex;
   align-items: center;

@@ -216,6 +216,12 @@
     .photo-item-body input { width: 100%; font-size: 0.8rem; padding: 0.35rem 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: #fff; }
     .photo-item-actions { display: flex; gap: 0.4rem; margin-top: 0.5rem; }
     .photo-item-actions button { flex: 1; }
+    .picker-item { cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s; }
+    .picker-item:hover { border-color: var(--accent); }
+    .picker-item.picker-selected { border-color: var(--success); box-shadow: 0 0 0 2px var(--success); }
+    .picker-label { text-align: center; padding: 0.4rem 0.5rem; font-size: 0.72rem; }
+    .picker-label .picker-show-name { color: var(--muted); display: block; margin-bottom: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .picker-label .picker-status { font-weight: 600; }
     .photo-upload-zone {
       border: 2px dashed var(--border); border-radius: var(--radius); padding: 2rem;
       text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s;
@@ -345,6 +351,11 @@
             <input type="file" id="photo-file-input" accept="image/*" multiple style="display:none" onchange="uploadPhotos(this.files)" />
           </div>
           <div class="upload-progress" id="upload-progress">Uploading…</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Aus Show-Fotos hinzufügen</div>
+          <p class="builder-note">Alle Fotos die du bei Shows hochgeladen hast. Anklicken um sie zur Galerie hinzuzufügen oder zu entfernen.</p>
+          <div id="show-photo-picker" class="photo-grid"></div>
         </div>
       </div>
 
@@ -616,6 +627,7 @@ function populateForm() {
   migratePastShows();
   renderShows('upcoming');
   renderShows('past');
+  renderShowPhotoPicker();
 
   const imp = data.imprint || {};
   document.getElementById('imprint-name').value = imp.name || '';
@@ -948,6 +960,49 @@ function renderPhotos() {
     </div>
   `).join('');
 
+}
+
+function renderShowPhotoPicker() {
+  const allShows = [...(data.shows && data.shows.upcoming || []), ...(data.shows && data.shows.past || [])];
+  const showPhotos = [];
+  allShows.forEach(show => {
+    (show.photos || []).forEach(p => {
+      const src = p.full || p.path || p.thumb;
+      if (src && !showPhotos.find(x => x.src === src)) {
+        showPhotos.push({ src, thumb: p.thumb || src, label: (show.venue || '') + (show.city ? ', ' + show.city : '') });
+      }
+    });
+  });
+  const picker = document.getElementById('show-photo-picker');
+  if (!showPhotos.length) {
+    picker.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;margin-bottom:0.5rem">Noch keine Show-Fotos vorhanden.</p>';
+    return;
+  }
+  const inGallery = new Set((data.photos || []).map(p => p.src));
+  picker.innerHTML = showPhotos.map(p => {
+    const selected = inGallery.has(p.src);
+    return `<div class="photo-item picker-item ${selected ? 'picker-selected' : ''}" onclick="togglePickerPhoto('${p.src.replace(/'/g,"\\'")}','${p.thumb.replace(/'/g,"\\'")}')">
+      <img src="${p.thumb}" onerror="this.style.opacity='0.3'" style="height:140px;object-fit:cover;width:100%;display:block" />
+      <div class="picker-label">
+        <span class="picker-show-name">${p.label}</span>
+        <span class="picker-status" style="color:${selected ? 'var(--success)' : 'var(--muted)'}">
+          ${selected ? '✓ In Galerie' : '+ Hinzufügen'}
+        </span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function togglePickerPhoto(src, thumb) {
+  if (!data.photos) data.photos = [];
+  const idx = data.photos.findIndex(p => p.src === src);
+  if (idx >= 0) {
+    data.photos.splice(idx, 1);
+  } else {
+    data.photos.push({ src, alt: '' });
+  }
+  renderPhotos();
+  renderShowPhotoPicker();
 }
 
 // Init upload zone drag-and-drop once

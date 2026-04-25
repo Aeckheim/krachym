@@ -85,6 +85,12 @@ async function loadContent() {
           document.querySelectorAll('.nav-links li a').forEach(a => a.style.color = c.meta.nav_color);
         }
       }
+      // Hero shows strip uses same colors as nav
+      const strip = document.querySelector('.hero-shows-strip');
+      if (strip) {
+        if (c.meta.nav_bg)    strip.style.background = c.meta.nav_bg;
+        if (c.meta.nav_color) strip.style.color = c.meta.nav_color;
+      }
     }
     if (c.meta.marquee_bg || c.meta.marquee_color) {
       const bar = document.querySelector('.marquee-bar');
@@ -287,6 +293,15 @@ async function loadContent() {
       </div>
     `).join('');
   }
+  // Upcoming show photos — large images at top of Live section
+  const upcomingPhotos = upcomingShows.flatMap(s => (s.photos || []).map(p => ({ src: p.full || p.thumb, thumb: p.thumb || p.full, show: s.venue + ', ' + s.city })));
+  const upcomingPhotosEl = document.getElementById('upcoming-show-photos');
+  if (upcomingPhotosEl && upcomingPhotos.length) {
+    upcomingPhotosEl.innerHTML = `<div class="upcoming-photos-grid reveal">${
+      upcomingPhotos.map(p => `<img src="${p.src}" alt="${p.show}" loading="lazy" onclick="openLightbox('${p.src}')" title="${p.show}" />`).join('')
+    }</div>`;
+  }
+
   renderShows(upcomingShows, 'shows-upcoming');
   renderShows(pastShows, 'shows-past');
 
