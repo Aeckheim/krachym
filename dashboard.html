@@ -613,6 +613,7 @@ function populateForm() {
   renderReleases();
   renderPhotos();
   renderVideos();
+  migratePastShows();
   renderShows('upcoming');
   renderShows('past');
 
@@ -1090,6 +1091,17 @@ function addVideo() {
   if (!data.videos) data.videos = [];
   data.videos.push({ title: 'New Video', youtube_id: '' });
   renderVideos();
+}
+
+// ── SHOWS: auto-migrate expired upcoming → past ──
+function migratePastShows() {
+  if (!data.shows) return;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const expired = (data.shows.upcoming || []).filter(s => new Date(s.date + 'T00:00:00') < today);
+  if (!expired.length) return;
+  data.shows.upcoming = (data.shows.upcoming || []).filter(s => new Date(s.date + 'T00:00:00') >= today);
+  if (!data.shows.past) data.shows.past = [];
+  data.shows.past.push(...expired);
 }
 
 // ── SHOWS ──
