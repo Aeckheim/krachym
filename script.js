@@ -255,17 +255,23 @@ async function loadContent() {
     </div>
   `).join('');
 
-  // Shows
+  // Shows — split by today's date regardless of which array they're stored in
+  const allShows = [...(c.shows.upcoming || []), ...(c.shows.past || [])];
+  const showToday = new Date(); showToday.setHours(0,0,0,0);
+  const upcomingShows = allShows
+    .filter(s => new Date(s.date + 'T00:00:00') >= showToday)
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
+  const pastShows = allShows
+    .filter(s => new Date(s.date + 'T00:00:00') < showToday)
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+
   function renderShows(shows, containerId) {
     const el = document.getElementById(containerId);
     if (!shows || shows.length === 0) {
       el.innerHTML = `<p class="no-shows">No shows listed.</p>`;
       return;
     }
-    const sorted = containerId === 'shows-past'
-      ? [...shows].sort((a, b) => (b.date || '') < (a.date || '') ? -1 : 1)
-      : shows;
-    el.innerHTML = sorted.map(s => `
+    el.innerHTML = shows.map(s => `
       <div class="show-item">
         <div class="show-date">${formatDate(s.date)}</div>
         <div class="show-info">
@@ -281,8 +287,8 @@ async function loadContent() {
       </div>
     `).join('');
   }
-  renderShows(c.shows.upcoming, 'shows-upcoming');
-  renderShows(c.shows.past, 'shows-past');
+  renderShows(upcomingShows, 'shows-upcoming');
+  renderShows(pastShows, 'shows-past');
 
   // Activate show item closest to screen center on scroll (touch devices only)
   const showsPastEl = document.getElementById('shows-past');
