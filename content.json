@@ -564,8 +564,8 @@
     "heading_scale": "xlarge",
     "section_order": [
       "about",
-      "videos",
       "releases",
+      "videos",
       "live",
       "photos"
     ],
