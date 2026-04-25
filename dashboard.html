@@ -135,6 +135,7 @@
     .section-item-handle { font-size: 1.1rem; color: #ccc; flex-shrink: 0; line-height: 1; }
     .section-item-label { font-weight: 600; font-size: 0.9rem; }
     .section-item-hint { margin-left: auto; font-size: 0.72rem; color: var(--muted); }
+    .section-item-move { display: flex; gap: 0.3rem; margin-left: auto; }
 
     .color-preview-strip {
       display: flex; height: 48px; border-radius: var(--radius);
@@ -817,7 +818,10 @@ function renderSectionOrder() {
     return `<div class="section-item" draggable="true" data-section="${id}">
       <span class="section-item-handle">&#9776;</span>
       <span class="section-item-label">${sec.label}</span>
-      <span class="section-item-hint">drag to reorder</span>
+      <div class="section-item-move">
+        <button class="btn btn-ghost btn-sm" onclick="moveSectionItem(${i},-1)" title="Nach oben">↑</button>
+        <button class="btn btn-ghost btn-sm" onclick="moveSectionItem(${i},1)" title="Nach unten">↓</button>
+      </div>
     </div>`;
   }).join('');
 }
@@ -861,6 +865,17 @@ function renderSectionOrder() {
     if (target && !list.contains(e.relatedTarget)) target.classList.remove('drag-over');
   });
 })();
+
+function moveSectionItem(i, dir) {
+  const defaultOrder = SECTIONS_META.map(s => s.id);
+  const order = (data.meta && data.meta.section_order) || defaultOrder;
+  const j = i + dir;
+  if (j < 0 || j >= order.length) return;
+  [order[i], order[j]] = [order[j], order[i]];
+  if (!data.meta) data.meta = {};
+  data.meta.section_order = order;
+  renderSectionOrder();
+}
 
 function updateSectionOrderFromDOM() {
   const items = document.querySelectorAll('#section-order-list .section-item');
