@@ -578,7 +578,7 @@
     "primary_color": "#8252fe",
     "accent_color": "#07fae8",
     "background_color": "#f40006",
-    "font": "mono",
+    "font": "sans",
     "heading_scale": "xlarge",
     "section_order": [
       "about",
