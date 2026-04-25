@@ -1127,7 +1127,6 @@ function renderShows(type) {
         <div class="field"><label>Country Code (e.g. DE)</label><input value="${s.country||''}" maxlength="3" oninput="data.shows.${type}[${i}].country=this.value" /></div>
         <div class="field"><label>Tickets URL (optional)</label><input type="url" value="${s.tickets||''}" oninput="data.shows.${type}[${i}].tickets=this.value" /></div>
       </div>
-      ${type === 'past' ? `
       <div class="field" style="margin-top:0.5rem">
         <label>Fotos (erscheinen beim Hovern)</label>
         <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;margin-top:0.4rem">
@@ -1141,7 +1140,7 @@ function renderShows(type) {
             +<input type="file" accept="image/*" multiple style="display:none" onchange="uploadShowPhoto(event,'${type}',${i})">
           </label>
         </div>
-      </div>` : ''}
+      </div>
     </div>
   `).join('');
 }
