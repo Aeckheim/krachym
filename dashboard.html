@@ -1151,23 +1151,99 @@ async function uploadShowPhoto(event, type, i) {
   if (!data.shows[type][i].photos) data.shows[type][i].photos = [];
   let uploaded = 0;
   for (const file of files) {
-    const fd = new FormData();
-    fd.append('file', file);
-    try {
-      const res = await fetch('/upload?thumb=1', { method: 'POST', body: fd });
-      if (!res.ok) { toast('Upload fehlgeschlagen – serve.py läuft?', true); continue; }
-      const json = await res.json();
-      const r = json.paths && json.paths[0];
-      if (!r) { toast('Upload fehlgeschlagen', true); continue; }
-      data.shows[type][i].photos.push({ thumb: r.thumb || r.path, full: r.path });
-      uploaded++;
-    } catch(e) {
-      toast('Kein Server – start.bat starten!', true);
-      return;
-    }
+    toast('Uploading ' + file.name + '…');
+    const result = await uploadImageFile(file);
+    if (!result) continue;
+    data.shows[type][i].photos.push(result);
+    uploaded++;
   }
   renderShows(type);
   if (uploaded) toast(uploaded + ' Foto(s) hochgeladen – Save nicht vergessen!');
+}
+
+// ── UNIVERSAL IMAGE UPLOAD ──
+// Tries local serve.py first, falls back to GitHub API
+async function uploadImageFile(file) {
+  // 1) Try local server
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+    const res = await fetch('/upload?thumb=1', { method: 'POST', body: fd });
+    if (res.ok) {
+      const json = await res.json();
+      const r = json.paths && json.paths[0];
+      if (r) return { thumb: r.thumb || r.path, full: r.path };
+    }
+  } catch(e) { /* no local server */ }
+
+  // 2) Fallback: GitHub API
+  const token = localStorage.getItem('gh_token');
+  const repo  = localStorage.getItem('gh_repo') || 'Aeckheim/krachym';
+  if (!token) {
+    toast('GitHub Token nötig – bitte oben rechts eintragen', true);
+    openGhSettings();
+    return null;
+  }
+  try {
+    const base64full = await fileToBase64(file);
+    const thumbBase64 = await createThumbnail(file, 150);
+    const ext  = file.name.split('.').pop().toLowerCase();
+    const base = file.name.replace(/\.[^.]+$/, '');
+    const fullPath  = `images/${file.name}`;
+    const thumbPath = `images/thumb_${base}.jpg`;
+    toast('Hochladen via GitHub…');
+    await githubPutFile(token, repo, fullPath,  base64full,   `Upload ${file.name}`);
+    if (thumbBase64) await githubPutFile(token, repo, thumbPath, thumbBase64, `Upload thumb_${base}.jpg`);
+    return { full: fullPath, thumb: thumbBase64 ? thumbPath : fullPath };
+  } catch(e) {
+    toast('Upload Fehler: ' + e.message, true);
+    return null;
+  }
+}
+
+async function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result.split(',')[1]);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+
+async function createThumbnail(file, maxSize) {
+  return new Promise(resolve => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', 0.8).split(',')[1]);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+    img.src = url;
+  });
+}
+
+async function githubPutFile(token, repo, path, content, message) {
+  const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+  let sha = null;
+  try {
+    const info = await fetch(apiUrl, { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } });
+    if (info.ok) sha = (await info.json()).sha;
+  } catch(e) {}
+  const body = { message, content };
+  if (sha) body.sha = sha;
+  const res = await fetch(apiUrl, {
+    method: 'PUT',
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error('GitHub API ' + res.status);
 }
 
 function removeShowPhoto(type, i, pi) {
