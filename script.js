@@ -146,6 +146,30 @@ async function loadContent() {
   updateMarquee(name);
   document.getElementById('about-text').textContent = c.artist.about;
 
+  // Upcoming shows strip after hero
+  const todayDate = new Date(); todayDate.setHours(0,0,0,0);
+  const upcoming = (c.shows && c.shows.upcoming || [])
+    .filter(s => new Date(s.date + 'T00:00:00') >= todayDate)
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
+  const upcomingEl = document.getElementById('hero-upcoming-shows');
+  if (upcomingEl && upcoming.length) {
+    const preview = upcoming.slice(0, 2);
+    const hasMore = upcoming.length > 2;
+    upcomingEl.innerHTML = `
+      <div class="hero-shows-strip">
+        <span class="hero-shows-label">upcoming</span>
+        ${preview.map(s => `
+          <a href="#live" class="hero-show-item">
+            <span class="hero-show-date">${formatDate(s.date)}</span>
+            <span class="hero-show-sep">—</span>
+            <span class="hero-show-venue">${s.venue}, ${s.city}</span>
+          </a>
+        `).join('')}
+        ${hasMore ? `<a href="#live" class="hero-shows-more">+${upcoming.length - 2} more →</a>` : ''}
+      </div>
+    `;
+  }
+
   // Artist photo
   const photoEl = document.getElementById('about-photo');
   if (c.artist.photo) {
