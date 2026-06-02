@@ -918,8 +918,19 @@ function _lbKeyHandler(e) {
       return true;
     });
   }
+
+  // Cubes glide (top/left/opacity) independently of their spin (transform).
+  const cubes = Array.from(document.querySelectorAll('.lofi-obj'));
+  cubes.forEach(c => {
+    c.dataset.top  = c.style.top;
+    c.dataset.left = c.style.left;
+    c.style.transition = 'top .8s cubic-bezier(.5,0,.2,1), left .8s cubic-bezier(.5,0,.2,1), margin .8s ease, opacity .5s ease';
+  });
+
   function toggleCollapse() {
     collapsed = !collapsed;
+
+    // 1) Scatter (or restore) the page content blocks
     const targets = collapseTargets();
     const n = targets.length;
     targets.forEach((el, i) => {
@@ -934,6 +945,32 @@ function _lbKeyHandler(e) {
       } else {
         el.style.transform = '';
         el.style.opacity = '';
+      }
+    });
+
+    // 2) The cyan cube glides to screen centre; the others fade out
+    cubes.forEach(c => {
+      const isHero = c.classList.contains('js-collapse');
+      if (collapsed) {
+        if (isHero) {
+          c.style.top = '50%';
+          c.style.left = '50%';
+          c.style.margin = 'calc(var(--s) / -2) 0 0 calc(var(--s) / -2)';
+          c.style.zIndex = '500';
+        } else {
+          c.style.opacity = '0';
+          c.style.pointerEvents = 'none';
+        }
+      } else {
+        if (isHero) {
+          c.style.top = c.dataset.top;
+          c.style.left = c.dataset.left;
+          c.style.margin = '';
+          c.style.zIndex = '';
+        } else {
+          c.style.opacity = '';
+          c.style.pointerEvents = '';
+        }
       }
     });
   }
