@@ -522,6 +522,22 @@
           {
             "thumb": "images/thumb_totehotel.jpg",
             "full": "images/totehotel.jpg"
+          },
+          {
+            "full": "images/tote1.jpg",
+            "thumb": "images/thumb_tote1.jpg"
+          },
+          {
+            "full": "images/tote2.jpg",
+            "thumb": "images/thumb_tote2.jpg"
+          },
+          {
+            "full": "images/tote3.jpg",
+            "thumb": "images/thumb_tote3.jpg"
+          },
+          {
+            "full": "images/tote_guardianangel.jpg",
+            "thumb": "images/thumb_tote_guardianangel.jpg"
           }
         ]
       },
