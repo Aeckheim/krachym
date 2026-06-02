@@ -203,8 +203,12 @@
     <button id="cookie-accept" class="cookie-btn">[ ok ]</button>
   </div>
 
-  <div id="lightbox" onclick="closeLightbox()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;cursor:pointer;align-items:center;justify-content:center;">
-    <img id="lightbox-img" style="max-width:90vw;max-height:90vh;border-radius:4px;object-fit:contain;box-shadow:0 0 60px rgba(0,0,0,0.8);">
+  <div id="lightbox" onclick="closeLightbox()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;box-sizing:border-box;">
+    <button id="lightbox-prev" onclick="event.stopPropagation();lightboxStep(-1)" aria-label="Vorheriges Foto" style="display:none;position:absolute;left:16px;top:50%;transform:translateY(-50%);align-items:center;justify-content:center;width:54px;height:54px;border:none;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;font-size:2rem;line-height:1;cursor:pointer;">&lsaquo;</button>
+    <img id="lightbox-img" onclick="event.stopPropagation()" style="max-width:86vw;max-height:80vh;border-radius:4px;object-fit:contain;box-shadow:0 0 60px rgba(0,0,0,0.8);cursor:default;">
+    <div id="lightbox-credit" style="display:none;color:#f5f500;font-size:0.95rem;letter-spacing:0.02em;text-align:center;max-width:90vw;"></div>
+    <div id="lightbox-counter" style="display:none;color:rgba(255,255,255,0.6);font-size:0.8rem;letter-spacing:0.05em;"></div>
+    <button id="lightbox-next" onclick="event.stopPropagation();lightboxStep(1)" aria-label="Nächstes Foto" style="display:none;position:absolute;right:16px;top:50%;transform:translateY(-50%);align-items:center;justify-content:center;width:54px;height:54px;border:none;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;font-size:2rem;line-height:1;cursor:pointer;">&rsaquo;</button>
   </div>
 
   <script src="script.js?v=10"></script>

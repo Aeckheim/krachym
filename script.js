@@ -203,8 +203,9 @@ async function loadContent() {
   // Photos
   const photoGrid = document.getElementById('photos-grid');
   if (photoGrid && c.photos && c.photos.length) {
-    photoGrid.innerHTML = c.photos.map(p =>
-      `<img src="${p.src}" alt="${p.alt}" loading="lazy" onclick="openLightbox(this.src)" />`
+    const gdata = encGallery(c.photos.map(p => ({ src: p.src, credit: p.credit || '' })));
+    photoGrid.innerHTML = c.photos.map((p, i) =>
+      `<img src="${p.src}" alt="${p.alt}" loading="lazy" onclick="openGallery('${gdata}', ${i})" />`
     ).join('');
   }
 
@@ -277,13 +278,16 @@ async function loadContent() {
       el.innerHTML = `<p class="no-shows">No shows listed.</p>`;
       return;
     }
-    el.innerHTML = shows.map(s => `
+    el.innerHTML = shows.map(s => {
+      const gdata = encGallery((s.photos || []).map(p => ({ src: p.full || p.thumb, credit: p.credit || '' })));
+      const photoCircles = (s.photos || []).map((p, pi) => `<div class="show-photo" onclick="openGallery('${gdata}', ${pi})"><img src="${p.thumb}" alt="${s.venue} ${pi+1}" loading="lazy"></div>`).join('');
+      return `
       <div class="show-item">
         <div class="show-date">${formatDate(s.date)}</div>
         <div class="show-info">
           <div class="show-venue-row">
             <span class="show-venue-text">${s.venue}${s.note ? ' <span class="show-note">' + s.note + '</span>' : ''}</span>
-            ${(s.photos || []).map((p, pi) => `<div class="show-photo" onclick="openLightbox('${p.full || p.thumb}')"><img src="${p.thumb}" alt="${s.venue} ${pi+1}" loading="lazy"></div>`).join('')}
+            ${photoCircles}
           </div>
           <div class="show-city">${s.city}${s.country ? ', ' + s.country : ''}</div>
         </div>
@@ -291,14 +295,16 @@ async function loadContent() {
           ${s.tickets ? `<a href="${s.tickets}" target="_blank" rel="noopener">Tickets</a>` : ''}
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
   }
   // Upcoming show photos — large images at top of Live section
-  const upcomingPhotos = upcomingShows.flatMap(s => (s.photos || []).map(p => ({ src: p.full || p.thumb, thumb: p.thumb || p.full, show: s.venue + ', ' + s.city })));
+  const upcomingPhotos = upcomingShows.flatMap(s => (s.photos || []).map(p => ({ src: p.full || p.thumb, thumb: p.thumb || p.full, show: s.venue + ', ' + s.city, credit: p.credit || '' })));
   const upcomingPhotosEl = document.getElementById('upcoming-show-photos');
   if (upcomingPhotosEl && upcomingPhotos.length) {
+    const gdata = encGallery(upcomingPhotos.map(p => ({ src: p.src, credit: p.credit })));
     upcomingPhotosEl.innerHTML = `<div class="upcoming-photos-grid reveal">${
-      upcomingPhotos.map(p => `<img src="${p.src}" alt="${p.show}" loading="lazy" onclick="openLightbox('${p.src}')" title="${p.show}" />`).join('')
+      upcomingPhotos.map((p, i) => `<img src="${p.src}" alt="${p.show}" loading="lazy" onclick="openGallery('${gdata}', ${i})" title="${p.show}" />`).join('')
     }</div>`;
   }
 
@@ -533,14 +539,64 @@ function sendContactForm(e, toEmail) {
   window.location.href = `mailto:${toEmail}?subject=${subject}&body=${body}`;
 }
 
-function openLightbox(src) {
-  const lb = document.getElementById('lightbox');
-  document.getElementById('lightbox-img').src = src;
-  lb.style.display = 'flex';
-  document.addEventListener('keydown', closeLightboxOnEsc);
+// Encode a photo gallery [{src, credit}] for safe use inside a single-quoted onclick attribute.
+function encGallery(arr) {
+  return encodeURIComponent(JSON.stringify(arr)).replace(/'/g, '%27');
 }
+
+let _lbGallery = [];
+let _lbIndex = 0;
+
+// Open a gallery of photos starting at a given index. `encoded` comes from encGallery().
+function openGallery(encoded, index) {
+  try { _lbGallery = JSON.parse(decodeURIComponent(encoded)); }
+  catch (e) { _lbGallery = []; }
+  _lbIndex = index || 0;
+  _renderLightbox();
+  document.getElementById('lightbox').style.display = 'flex';
+  document.addEventListener('keydown', _lbKeyHandler);
+}
+
+// Back-compat single-image entry point. `credit` may be plain or encodeURIComponent-encoded.
+function openLightbox(src, credit) {
+  let c = credit || '';
+  try { if (c) c = decodeURIComponent(c); } catch (e) {}
+  openGallery(encGallery([{ src: src, credit: c }]), 0);
+}
+
+function lightboxStep(dir) {
+  if (_lbGallery.length < 2) return;
+  _lbIndex = (_lbIndex + dir + _lbGallery.length) % _lbGallery.length;
+  _renderLightbox();
+}
+
+function _renderLightbox() {
+  const item = _lbGallery[_lbIndex] || {};
+  document.getElementById('lightbox-img').src = item.src || '';
+  const cap = document.getElementById('lightbox-credit');
+  if (cap) {
+    cap.textContent = item.credit ? '📷 ' + item.credit : '';
+    cap.style.display = item.credit ? 'block' : 'none';
+  }
+  const multi = _lbGallery.length > 1;
+  const counter = document.getElementById('lightbox-counter');
+  if (counter) {
+    counter.textContent = multi ? (_lbIndex + 1) + ' / ' + _lbGallery.length : '';
+    counter.style.display = multi ? 'block' : 'none';
+  }
+  ['lightbox-prev', 'lightbox-next'].forEach(id => {
+    const b = document.getElementById(id);
+    if (b) b.style.display = multi ? 'flex' : 'none';
+  });
+}
+
 function closeLightbox() {
   document.getElementById('lightbox').style.display = 'none';
-  document.removeEventListener('keydown', closeLightboxOnEsc);
+  document.removeEventListener('keydown', _lbKeyHandler);
 }
-function closeLightboxOnEsc(e) { if (e.key === 'Escape') closeLightbox(); }
+
+function _lbKeyHandler(e) {
+  if (e.key === 'Escape') closeLightbox();
+  else if (e.key === 'ArrowLeft') lightboxStep(-1);
+  else if (e.key === 'ArrowRight') lightboxStep(1);
+}
