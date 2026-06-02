@@ -85,13 +85,6 @@
   "shows": {
     "upcoming": [
       {
-        "date": "2026-05-30",
-        "venue": "Busy Hands Fest",
-        "city": "Leipzig",
-        "country": "DE",
-        "tickets": ""
-      },
-      {
         "date": "2026-06-13",
         "venue": "Villa Kuriosum",
         "city": "Berlin",
@@ -116,6 +109,13 @@
         "date": "2026-06-27",
         "venue": "Kultur im Bunker",
         "city": "Bremen",
+        "country": "DE",
+        "tickets": ""
+      },
+      {
+        "date": "2026-08-02",
+        "venue": "Felsenkeller",
+        "city": "Leipzig",
         "country": "DE",
         "tickets": ""
       }
@@ -563,6 +563,13 @@
             "full": "images/photo_5_2026-04-25_09-14-54.jpg"
           }
         ]
+      },
+      {
+        "date": "2026-05-30",
+        "venue": "Busy Hands Fest",
+        "city": "Leipzig",
+        "country": "DE",
+        "tickets": ""
       }
     ]
   },
