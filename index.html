@@ -31,7 +31,7 @@
   <link rel="preconnect" href="https://bandcamp.com" />
   <link rel="preconnect" href="https://www.youtube.com" />
   <link rel="dns-prefetch" href="https://i.ytimg.com" />
-  <link rel="stylesheet" href="style.css?v=7" />
+  <link rel="stylesheet" href="style.css?v=17" />
   <style>
     :root {
       --text: #8252fe;
@@ -47,7 +47,38 @@
   </style>
 </head>
 <body>
+<div id="blobs" aria-hidden="true"></div>
 <div id="checker-bg"></div>
+<div id="grain" aria-hidden="true"></div>
+<div id="scroll-progress" aria-hidden="true"></div>
+<!-- SVG filter for the interactive Perlin-noise "goo" on the About section -->
+<svg width="0" height="0" aria-hidden="true" style="position:absolute;pointer-events:none">
+  <defs>
+    <filter id="about-goo" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence id="about-turb" type="turbulence" baseFrequency="0.01 0.01" numOctaves="2" seed="7" result="noise"/>
+      <feDisplacementMap id="about-disp" in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <!-- Self-animating Perlin displacement for the red cube -->
+    <filter id="obj-goo" x="-35%" y="-35%" width="170%" height="170%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="1" seed="4" result="n">
+        <animate attributeName="baseFrequency" dur="9s" values="0.010;0.030;0.018;0.010" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="8" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <!-- Pulsing "pixel-melt" (feMorphology) for the blue cube -->
+    <filter id="obj-morph" x="-40%" y="-40%" width="180%" height="180%">
+      <feMorphology operator="dilate" radius="0">
+        <animate attributeName="radius" dur="1.4s" values="0;3.5;0;1.5;0" repeatCount="indefinite"/>
+      </feMorphology>
+    </filter>
+    <!-- Pixel-melt variant for the cyan cube: slower + chunkier, out of sync -->
+    <filter id="obj-morph2" x="-40%" y="-40%" width="180%" height="180%">
+      <feMorphology operator="dilate" radius="0">
+        <animate attributeName="radius" dur="2.3s" values="0;2;4.5;1;0" repeatCount="indefinite"/>
+      </feMorphology>
+    </filter>
+  </defs>
+</svg>
 
   <!-- NAV -->
   <nav id="nav">
@@ -142,6 +173,10 @@
 
   <!-- VIDEOS -->
   <section id="videos" class="section section-alt">
+    <div class="videos-bg" aria-hidden="true">
+      <video src="images/videos-bg.mp4" autoplay muted loop playsinline
+             onerror="this.parentElement.style.display='none'"></video>
+    </div>
     <div class="container">
       <h2 class="section-title reveal">Videos</h2>
       <div class="videos-grid reveal" id="videos-grid"></div>
@@ -179,11 +214,18 @@
 
   <!-- FLYING SHAPES -->
   <div class="flying-shapes" aria-hidden="true">
-    <div class="shape shape-sq"></div>
-    <div class="shape shape-sq2"></div>
-    <div class="shape shape-dia"></div>
-    <div class="shape shape-dot"></div>
-    <div class="shape shape-cross"></div>
+    <div class="lofi-obj obj-cube fx-morph" style="top:16%;left:6%;--s:72px;--spin:15s;--obj-color:#0a0aff" title="klick mich">
+      <div class="lofi-face"></div><div class="lofi-face"></div><div class="lofi-face"></div>
+      <div class="lofi-face"></div><div class="lofi-face"></div><div class="lofi-face"></div>
+    </div>
+    <div class="lofi-obj obj-cube fx-perlin" style="top:58%;left:84%;--s:92px;--spin:22s;--obj-color:#ff2600;animation-direction:reverse" title="klick mich">
+      <div class="lofi-face"></div><div class="lofi-face"></div><div class="lofi-face"></div>
+      <div class="lofi-face"></div><div class="lofi-face"></div><div class="lofi-face"></div>
+    </div>
+    <div class="lofi-obj obj-cube fx-morph2 js-collapse" style="top:82%;left:15%;--s:54px;--spin:12s;--obj-color:#00f0ff" title="klick mich">
+      <div class="lofi-face"></div><div class="lofi-face"></div><div class="lofi-face"></div>
+      <div class="lofi-face"></div><div class="lofi-face"></div><div class="lofi-face"></div>
+    </div>
     <img class="shape shape-butterfly" src="https://sengpielaudio.com/ANSchmetterling01.gif" alt="" />
   </div>
 
@@ -213,6 +255,6 @@
     <button id="lightbox-next" onclick="event.stopPropagation();lightboxStep(1)" aria-label="Nächstes Foto" style="display:none;position:absolute;right:16px;top:50%;transform:translateY(-50%);align-items:center;justify-content:center;width:54px;height:54px;border:none;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;font-size:2rem;line-height:1;cursor:pointer;">&rsaquo;</button>
   </div>
 
-  <script src="script.js?v=10"></script>
+  <script src="script.js?v=17"></script>
 </body>
 </html>

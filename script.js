@@ -600,3 +600,355 @@ function _lbKeyHandler(e) {
   else if (e.key === 'ArrowLeft') lightboxStep(-1);
   else if (e.key === 'ArrowRight') lightboxStep(1);
 }
+
+// Butterfly: tap/click a butterfly to spawn a duplicate at a random spot,
+// with a little pop-in animation. The new butterflies then fly freely around
+// the screen. Works on PC, Android and iPhone (click fires on tap too).
+// Capped so the page can't get flooded.
+(function initButterflyClone() {
+  const BUTTERFLY_SRC = 'https://sengpielaudio.com/ANSchmetterling01.gif';
+  const MAX_BUTTERFLIES = 50;
+  const reduceMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const flyers = [];   // butterflies currently flying around
+  let count = 0;
+  let rafId = null;
+  let lastT = 0;
+
+  function spawnButterfly() {
+    if (count >= MAX_BUTTERFLIES) return;
+    count++;
+
+    // Size matches the CSS (~64px), shrink a bit on small screens.
+    const size = window.innerWidth < 600 ? 48 : 64;
+    const margin = size;
+    const x = margin + Math.random() * Math.max(0, window.innerWidth  - margin * 2);
+    const y = margin + Math.random() * Math.max(0, window.innerHeight - margin * 2);
+
+    const b = document.createElement('img');
+    b.src = BUTTERFLY_SRC;
+    b.alt = '';
+    b.className = 'butterfly-clone';
+    b.setAttribute('aria-hidden', 'true');
+    b.style.width = size + 'px';
+    b.style.left = (x - size / 2) + 'px';
+    b.style.top  = (y - size / 2) + 'px';
+    document.body.appendChild(b);
+
+    if (reduceMotion) return;  // respect users who prefer no motion
+
+    // Once the pop-in finishes, hand the butterfly over to the flight loop.
+    b.addEventListener('animationend', function onPop() {
+      b.removeEventListener('animationend', onPop);
+      b.style.animation = 'none';           // stop the CSS pop animation
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 0.6 + Math.random() * 0.9;
+      flyers.push({
+        el: b,
+        size,
+        anchorX: x - size / 2,   // its left/top in px; movement is a transform offset
+        anchorY: y - size / 2,
+        tx: 0, ty: 0,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+      });
+      startFlightLoop();
+    });
+  }
+
+  // Single shared animation loop drives every flying butterfly (cheap on mobile).
+  function startFlightLoop() {
+    if (rafId !== null) return;
+    lastT = performance.now();
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function tick(now) {
+    const dt = Math.min(50, now - lastT) / 16.67;  // ~1 per frame at 60fps
+    lastT = now;
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+
+    for (const f of flyers) {
+      // Gentle random steering for an organic, wandering flight.
+      f.vx += (Math.random() - 0.5) * 0.18;
+      f.vy += (Math.random() - 0.5) * 0.18;
+      const sp = Math.hypot(f.vx, f.vy);
+      const max = 2.4;
+      if (sp > max) { f.vx = f.vx / sp * max; f.vy = f.vy / sp * max; }
+
+      f.tx += f.vx * dt;
+      f.ty += f.vy * dt;
+
+      // Bounce off the viewport edges.
+      const minX = -f.anchorX, maxX = W - f.size - f.anchorX;
+      const minY = -f.anchorY, maxY = H - f.size - f.anchorY;
+      if (f.tx < minX) { f.tx = minX; f.vx = Math.abs(f.vx); }
+      else if (f.tx > maxX) { f.tx = maxX; f.vx = -Math.abs(f.vx); }
+      if (f.ty < minY) { f.ty = minY; f.vy = Math.abs(f.vy); }
+      else if (f.ty > maxY) { f.ty = maxY; f.vy = -Math.abs(f.vy); }
+
+      const dir  = f.vx < 0 ? -1 : 1;                       // face flight direction
+      const tilt = Math.max(-14, Math.min(14, f.vy * 5));   // tilt up/down a little
+      f.el.style.transform =
+        `translate(${f.tx}px, ${f.ty}px) scaleX(${dir}) rotate(${tilt}deg)`;
+    }
+
+    rafId = requestAnimationFrame(tick);
+  }
+
+  // Delegated click handler covers the original flying butterfly and all clones.
+  document.addEventListener('click', (e) => {
+    const t = e.target;
+    if (t && t.classList &&
+        (t.classList.contains('shape-butterfly') || t.classList.contains('butterfly-clone'))) {
+      spawnButterfly();
+    }
+  });
+})();
+
+// Reactive cursor: a pixel block that trails the mouse with easing and grows
+// over clickable elements. Desktop only (skips touch + reduced-motion users).
+(function initReactiveCursor() {
+  const fine   = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!fine || reduce) return;
+
+  const dot = document.createElement('div');
+  dot.id = 'cursor-dot';
+  dot.setAttribute('aria-hidden', 'true');
+  const ring = document.createElement('div');
+  ring.id = 'cursor-ring';
+  ring.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(dot);
+  document.body.appendChild(ring);
+
+  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+  let dx = mx, dy = my;   // dot — follows quickly
+  let rx = mx, ry = my;   // ring — lags further behind
+
+  document.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; }, { passive: true });
+
+  (function loop() {
+    dx += (mx - dx) * 0.28;
+    dy += (my - dy) * 0.28;
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    dot.style.transform  = `translate(${dx}px, ${dy}px)`;
+    ring.style.transform = `translate(${rx}px, ${ry}px)`;
+    requestAnimationFrame(loop);
+  })();
+
+  // Grow the cursor over interactive things
+  const hoverSel = 'a, button, input, textarea, .photos-grid img, .show-photo, ' +
+                   '.upcoming-photos-grid img, .video-card, .release-card, ' +
+                   '.release-cover-link, .shape-butterfly, .butterfly-clone';
+  document.addEventListener('mouseover', (e) => {
+    if (e.target.closest && e.target.closest(hoverSel)) {
+      dot.classList.add('cursor-hover');
+      ring.classList.add('cursor-hover');
+    }
+  });
+  document.addEventListener('mouseout', (e) => {
+    if (e.target.closest && e.target.closest(hoverSel)) {
+      dot.classList.remove('cursor-hover');
+      ring.classList.remove('cursor-hover');
+    }
+  });
+})();
+
+// About section: interactive Perlin-noise displacement ("goo") that melts the
+// content based on where the mouse is. Mouse X/Y drive the noise frequency,
+// Y also drives how hard it gets mushed. Eases back to crisp when you leave.
+(function initAboutGoo() {
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+  const section   = document.getElementById('about');
+  const container = section && section.querySelector('.container');
+  const turb = document.getElementById('about-turb');
+  const disp = document.getElementById('about-disp');
+  if (!section || !container || !turb || !disp) return;
+
+  let active = false, raf = null;
+  let curScale = 0, tgtScale = 0;
+  let curFx = 0.01, tgtFx = 0.01;
+  let curFy = 0.01, tgtFy = 0.01;
+
+  function onMove(e) {
+    const r = section.getBoundingClientRect();
+    const mx = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+    const my = Math.min(1, Math.max(0, (e.clientY - r.top)  / r.height));
+    tgtFx = 0.006 + mx * 0.05;   // horizontal position → noise frequency X
+    tgtFy = 0.006 + my * 0.05;   // vertical position   → noise frequency Y
+    tgtScale = 35 + my * 90;     // lower in the section = more brutal mush
+  }
+  function loop() {
+    curScale += (tgtScale - curScale) * 0.12;
+    curFx    += (tgtFx    - curFx)    * 0.12;
+    curFy    += (tgtFy    - curFy)    * 0.12;
+    disp.setAttribute('scale', curScale.toFixed(2));
+    turb.setAttribute('baseFrequency', curFx.toFixed(4) + ' ' + curFy.toFixed(4));
+    if (active || curScale > 0.4) {
+      raf = requestAnimationFrame(loop);
+    } else {
+      curScale = 0;
+      disp.setAttribute('scale', '0');
+      container.classList.remove('distorting');
+      raf = null;
+    }
+  }
+  section.addEventListener('mouseenter', () => {
+    active = true;
+    container.classList.add('distorting');
+    if (!raf) raf = requestAnimationFrame(loop);
+  });
+  section.addEventListener('mousemove', onMove, { passive: true });
+  section.addEventListener('mouseleave', () => {
+    active = false;
+    tgtScale = 0;
+    if (!raf) raf = requestAnimationFrame(loop);
+  });
+})();
+
+// Per-section grain dampening: ease the global grain down while the Releases
+// section is centred in view (0.8 everywhere else, 0.2 over Releases).
+(function initReleasesGrain() {
+  const grain    = document.getElementById('grain');
+  const releases = document.getElementById('releases');
+  if (!grain || !releases) return;
+  const STRONG = '0.8';   // matches the default #grain opacity
+  const SOFT   = '0.2';
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { grain.style.opacity = e.isIntersecting ? SOFT : STRONG; });
+  }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+  obs.observe(releases);
+})();
+
+// Scroll progress bar: a thin glitch-coloured bar that fills as you scroll.
+(function initScrollProgress() {
+  const bar = document.getElementById('scroll-progress');
+  if (!bar) return;
+  function update() {
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    const pct = max > 0 ? (window.scrollY || h.scrollTop) / max : 0;
+    bar.style.width = (pct * 100) + '%';
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+
+// Lo-fi 3D cubes: clicking one cycles the whole page's colour palette.
+(function initPaletteCubes() {
+  const root = document.documentElement;
+  const palettes = [
+    { body:'#f40006', sectionBg:'#8252fe', sectionText:'#f5f500', accent:'#07fae8', navBg:'#8252fe', navText:'#f5f500' },
+    { body:'#0a0aff', sectionBg:'#f5f500', sectionText:'#000000', accent:'#ff2600', navBg:'#000000', navText:'#f5f500' },
+    { body:'#00f0ff', sectionBg:'#ff2600', sectionText:'#ffffff', accent:'#0a0aff', navBg:'#000000', navText:'#00f0ff' },
+    { body:'#000000', sectionBg:'#f5f500', sectionText:'#000000', accent:'#ff2600', navBg:'#f5f500', navText:'#000000' },
+    { body:'#f5f500', sectionBg:'#000000', sectionText:'#f5f500', accent:'#00f0ff', navBg:'#000000', navText:'#f5f500' },
+    { body:'#ff2600', sectionBg:'#00f0ff', sectionText:'#000000', accent:'#8252fe', navBg:'#000000', navText:'#00f0ff' },
+  ];
+  const SECTIONS = ['about', 'releases', 'photos', 'videos'];
+  let idx = 0;
+
+  // ── Contrast guard: guarantees text stays legible on its background ──
+  function hexToRgb(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    const n = parseInt(hex, 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  function relLum(hex) {
+    const a = hexToRgb(hex).map(v => {
+      v /= 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+  }
+  function contrast(fg, bg) {
+    const L1 = relLum(fg), L2 = relLum(bg);
+    return (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+  }
+  // Keep the styled colour when it reads well enough; otherwise swap to the
+  // black/white that contrasts best with the background.
+  function readable(fg, bg, min) {
+    if (contrast(fg, bg) >= (min || 3)) return fg;
+    return relLum(bg) > 0.4 ? '#000000' : '#ffffff';
+  }
+
+  function applyPalette(p) {
+    const bodyText = readable(p.sectionText, p.body);
+    const secText  = readable(p.sectionText, p.sectionBg);
+    const navText  = readable(p.navText, p.navBg);
+    root.style.setProperty('--bg', p.body);
+    root.style.setProperty('--bg-alt', p.body);
+    root.style.setProperty('--bg-card', p.body);
+    root.style.setProperty('--text', bodyText);
+    root.style.setProperty('--accent', p.accent);
+    SECTIONS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.style.background = p.sectionBg; el.style.color = secText; }
+    });
+    const live = document.getElementById('live');
+    if (live) { live.style.background = p.body; live.style.color = bodyText; }
+    const nav = document.getElementById('nav');
+    if (nav) { nav.style.background = p.navBg; nav.style.color = navText; }
+    const navName = document.getElementById('nav-name');
+    if (navName) navName.style.color = navText;
+    document.querySelectorAll('.nav-links li a').forEach(a => a.style.color = navText);
+    const strip = document.querySelector('.hero-shows-strip');
+    if (strip) { strip.style.background = p.navBg; strip.style.color = navText; }
+    const bar = document.querySelector('.marquee-bar');
+    if (bar) bar.style.background = p.navBg;
+    document.querySelectorAll('.marquee-track span').forEach(s => s.style.color = navText);
+  }
+
+  // ── Page "collapse into pieces" toggle (driven by the cyan cube) ──
+  let collapsed = false;
+  function collapseTargets() {
+    const skip = new Set(['blobs', 'checker-bg', 'grain', 'scroll-progress', 'lightbox']);
+    return Array.from(document.body.children).filter(el => {
+      const t = el.tagName;
+      if (t === 'SCRIPT' || t === 'STYLE' || t === 'svg' || t === 'SVG') return false;
+      if (el.classList.contains('flying-shapes')) return false;   // keep the cubes
+      if (el.id && skip.has(el.id)) return false;                 // keep ambient layers
+      return true;
+    });
+  }
+  function toggleCollapse() {
+    collapsed = !collapsed;
+    const targets = collapseTargets();
+    const n = targets.length;
+    targets.forEach((el, i) => {
+      el.style.transition = 'transform .8s cubic-bezier(.55,-0.25,.6,1), opacity .8s ease';
+      el.style.transitionDelay = (collapsed ? i * 0.05 : (n - 1 - i) * 0.045) + 's';
+      if (collapsed) {
+        const dir = (i % 2 === 0) ? 1 : -1;
+        const tx  = (Math.random() * 50 - 25);
+        const rot = (20 + Math.random() * 55) * dir;
+        el.style.transform = `translate(${tx}vw, 125vh) rotate(${rot}deg) scale(.55)`;
+        el.style.opacity = '0';
+      } else {
+        el.style.transform = '';
+        el.style.opacity = '';
+      }
+    });
+  }
+
+  document.querySelectorAll('.lofi-obj').forEach(obj => {
+    obj.addEventListener('click', (e) => {
+      e.stopPropagation();
+      obj.classList.add('pop');
+      setTimeout(() => obj.classList.remove('pop'), 460);
+      if (obj.classList.contains('js-collapse')) {
+        toggleCollapse();                          // cyan cube: collapse / rebuild
+      } else {
+        idx = (idx + 1) % palettes.length;         // other cubes: cycle palette
+        applyPalette(palettes[idx]);
+      }
+    });
+  });
+})();
