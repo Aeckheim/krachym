@@ -1296,6 +1296,10 @@ async function githubPutFile(token, repo, path, content, message) {
     headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
+  if (res.status === 401 || res.status === 403) {
+    openGhSettings();
+    throw new Error('GitHub-Token abgelaufen/ungültig – bitte neuen Token eintragen');
+  }
   if (!res.ok) throw new Error('GitHub API ' + res.status);
 }
 
@@ -1433,6 +1437,11 @@ async function saveAll() {
     const info = await fetch(apiUrl, {
       headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
     });
+    if (info.status === 401 || info.status === 403) {
+      openGhSettings();
+      toast('GitHub-Token abgelaufen/ungültig – bitte neuen Token eintragen', true);
+      return;
+    }
     if (!info.ok) throw new Error('GitHub API: ' + info.status);
     const { sha } = await info.json();
     // Commit new content
