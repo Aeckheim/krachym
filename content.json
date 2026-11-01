@@ -122,12 +122,7 @@
         "city": "Halle",
         "country": "DE",
         "tickets": "",
-        "photos": [
-          {
-            "full": "images/Weekender_Rayo_X.jpg",
-            "thumb": "images/thumb_Weekender_Rayo_X.jpg"
-          }
-        ]
+        "photos": []
       },
       {
         "date": "2026-12-13",
@@ -135,12 +130,7 @@
         "city": "Hamburg",
         "country": "DE",
         "tickets": "",
-        "photos": [
-          {
-            "full": "images/Weekender_Rayo_X.jpg",
-            "thumb": "images/thumb_Weekender_Rayo_X.jpg"
-          }
-        ]
+        "photos": []
       },
       {
         "date": "2026-12-19",
