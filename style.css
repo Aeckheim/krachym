@@ -1490,6 +1490,7 @@ body:not(.touch) .show-item:hover .show-photo {
 .share-link:hover, .share-link:focus-visible { opacity: 1; background: #f5f500; color: #000; border-color: #f5f500; }
 .section-title .share-link { position: absolute; right: 0; bottom: 1rem; letter-spacing: 0.08em; }
 .share-link-lb { color: #f5f500; opacity: 0.8; }
+.lightbox-actions { display: flex; gap: 0.6rem; align-items: center; justify-content: center; }
 .video-card .share-link, .release-detail .share-link { margin-top: 0.6rem; }
 .video-title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
 .show-tickets { display: flex; gap: 0.4rem; align-items: center; justify-content: flex-end; }

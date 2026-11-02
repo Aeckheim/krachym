@@ -691,6 +691,30 @@ function shareLightbox() {
   if (item.id) shareLink(item.id);
 }
 
+// Download the current photo. Fetch as blob so it also works for cross-origin
+// images (where the <a download> attribute is ignored); fall back to a new tab.
+async function downloadLightbox() {
+  const item = _lbGallery[_lbIndex] || {};
+  if (!item.src) return;
+  const base = item.id ? 'krachym-' + item.id : decodeURIComponent(item.src.split('/').pop().split('?')[0]).replace(/\.\w{2,4}$/, '');
+  const name = (base + (item.credit ? '_foto-' + item.credit : '')).replace(/[^\w-]+/g, '_');
+  try {
+    const res = await fetch(item.src);
+    if (!res.ok) throw new Error(res.status);
+    const blob = await res.blob();
+    const ext = (blob.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name + '.' + ext;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  } catch (e) {
+    window.open(item.src, '_blank', 'noopener');
+  }
+}
+
 // Open a gallery of photos starting at a given index. `encoded` comes from encGallery().
 function openGallery(encoded, index) {
   try { _lbGallery = JSON.parse(decodeURIComponent(encoded)); }
@@ -720,6 +744,8 @@ function _renderLightbox() {
   document.getElementById('lightbox-img').src = item.src || '';
   const shareBtn = document.getElementById('lightbox-share');
   if (shareBtn) shareBtn.style.display = item.id ? 'block' : 'none';
+  const dlBtn = document.getElementById('lightbox-download');
+  if (dlBtn) dlBtn.style.display = item.src ? 'block' : 'none';
   if (item.id) setHash(item.id);
   const cap = document.getElementById('lightbox-credit');
   if (cap) {
