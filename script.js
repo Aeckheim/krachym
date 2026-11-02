@@ -1094,58 +1094,23 @@ function _lbKeyHandler(e) {
     });
   }
 
-  // Cubes glide (top/left/opacity) independently of their spin (transform).
-  const cubes = Array.from(document.querySelectorAll('.lofi-obj'));
-  cubes.forEach(c => {
-    c.dataset.top  = c.style.top;
-    c.dataset.left = c.style.left;
-    c.style.transition = 'top .8s cubic-bezier(.5,0,.2,1), left .8s cubic-bezier(.5,0,.2,1), margin .8s ease, opacity .5s ease';
-  });
-
   function toggleCollapse() {
     collapsed = !collapsed;
-
-    // 1) Scatter (or restore) the page content blocks
+    // Content implodes in place (scale to 0) — no translation, so nothing can
+    // push the page wider/taller, no scrollbars appear, and the cubes stay put.
     const targets = collapseTargets();
     const n = targets.length;
     targets.forEach((el, i) => {
-      el.style.transition = 'transform .8s cubic-bezier(.55,-0.25,.6,1), opacity .8s ease';
+      el.style.transformOrigin = 'center center';
+      el.style.transition = 'transform .7s cubic-bezier(.5,-0.35,.5,1), opacity .55s ease';
       el.style.transitionDelay = (collapsed ? i * 0.05 : (n - 1 - i) * 0.045) + 's';
       if (collapsed) {
-        const dir = (i % 2 === 0) ? 1 : -1;
-        const tx  = (Math.random() * 50 - 25);
-        const rot = (20 + Math.random() * 55) * dir;
-        el.style.transform = `translate(${tx}vw, 125vh) rotate(${rot}deg) scale(.55)`;
+        const rot = Math.random() * 44 - 22;
+        el.style.transform = `scale(0) rotate(${rot}deg)`;
         el.style.opacity = '0';
       } else {
         el.style.transform = '';
         el.style.opacity = '';
-      }
-    });
-
-    // 2) The cyan cube glides to screen centre; the others fade out
-    cubes.forEach(c => {
-      const isHero = c.classList.contains('js-collapse');
-      if (collapsed) {
-        if (isHero) {
-          c.style.top = '50%';
-          c.style.left = '50%';
-          c.style.margin = 'calc(var(--s) / -2) 0 0 calc(var(--s) / -2)';
-          c.style.zIndex = '500';
-        } else {
-          c.style.opacity = '0';
-          c.style.pointerEvents = 'none';
-        }
-      } else {
-        if (isHero) {
-          c.style.top = c.dataset.top;
-          c.style.left = c.dataset.left;
-          c.style.margin = '';
-          c.style.zIndex = '';
-        } else {
-          c.style.opacity = '';
-          c.style.pointerEvents = '';
-        }
       }
     });
   }
