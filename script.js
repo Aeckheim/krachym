@@ -182,8 +182,11 @@ async function loadContent() {
         const el = document.getElementById(id);
         if (el) anchor.before(el);
       });
-      const rider = document.getElementById('rider');
-      if (anchor && rider) anchor.before(rider);
+      // Sections outside section_order (rider, media) always sit right above the imprint
+      ['rider', 'media'].forEach(id => {
+        const el = document.getElementById(id);
+        if (anchor && el) anchor.before(el);
+      });
     }
     sectionOrder.forEach((id, i) => {
       const el = document.getElementById(id);
