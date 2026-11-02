@@ -1710,6 +1710,28 @@ body.no-blobs #blobs { display: none; }
 .obj-cube .lofi-face:nth-child(5) { transform: rotateX(90deg)  translateZ(calc(var(--s) / 2)); }
 .obj-cube .lofi-face:nth-child(6) { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); }
 
+/* dice: rounded faces with roman numerals, opposite faces add up to VII */
+.obj-cube .lofi-face {
+  border-radius: 16%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.obj-cube .lofi-face::after {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: calc(var(--s) * 0.42);
+  line-height: 1;
+  color: #000;
+  text-shadow: 1px 1px 0 rgba(255,255,255,0.35);
+}
+.obj-cube .lofi-face:nth-child(1)::after { content: 'I'; }
+.obj-cube .lofi-face:nth-child(2)::after { content: 'VI'; }
+.obj-cube .lofi-face:nth-child(3)::after { content: 'II'; }
+.obj-cube .lofi-face:nth-child(4)::after { content: 'V'; }
+.obj-cube .lofi-face:nth-child(5)::after { content: 'III'; }
+.obj-cube .lofi-face:nth-child(6)::after { content: 'IV'; }
+
 @keyframes obj-spin {
   from { transform: rotateX(0deg)   rotateY(0deg); }
   to   { transform: rotateX(360deg) rotateY(360deg); }
