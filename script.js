@@ -197,8 +197,7 @@ async function loadContent() {
   document.getElementById('footer-social').innerHTML = socialHTML;
 
   // Shop link
-  const shopLink = c.social.bandcamp || '#';
-  document.getElementById('nav-shop').href = shopLink;
+  document.getElementById('nav-shop').href = 'https://www.exe.ist/artists/krachym';
 
   // Photos
   const photoGrid = document.getElementById('photos-grid');
