@@ -1,0 +1,30 @@
+# Schreibt die Fotografen-Credits aus content.json in die Bilddateien (EXIF/PNG-Text),
+# auch wenn das Dashboard direkt ueber die GitHub-API speichert.
+name: Photo credits
+on:
+  push:
+    branches: [main]
+    paths: [content.json]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: photo-credits
+jobs:
+  credits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pillow
+      - run: |
+          python -c "
+          import json, sys; sys.path.insert(0, 'tools')
+          from image_credit import apply_credits
+          print(apply_credits(json.load(open('content.json', encoding='utf-8')), '.'))"
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add images
+          git diff --cached --quiet || (git commit -m "Fotografen-Credits in Bilddateien" && git pull --rebase && git push)
