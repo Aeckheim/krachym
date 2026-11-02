@@ -28,6 +28,122 @@ function socialIcon(platform) {
   return icons[platform] || '';
 }
 
+// ── Deep links ────────────────────────────────────────────────
+// Every section, photo, release, video and show gets its own URL
+// (krachym.de/#rider, #bio, #photo-3, #show-2025-11-22-tschoch …)
+// so single parts of the page can be sent around directly.
+const LINK_ALIASES = { bio: 'about', 'stage-rider': 'rider', techrider: 'rider', contact: 'imprint', shows: 'live', music: 'releases' };
+const _photoLinks = {};
+const _usedLinkIds = new Set();
+
+function slugify(str) {
+  return String(str || '').toLowerCase()
+    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+    .normalize('NFKD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'item';
+}
+
+function uniqueLinkId(base) {
+  let id = base, n = 2;
+  while (_usedLinkIds.has(id)) id = base + '-' + n++;
+  _usedLinkIds.add(id);
+  return id;
+}
+
+function registerPhotoLink(id, gdata, index) {
+  if (!_photoLinks[id]) _photoLinks[id] = { gdata, index };
+}
+
+function resolveLinkId(id) {
+  return LINK_ALIASES[id] || id;
+}
+
+function linkUrl(id) {
+  return location.origin + location.pathname + (id ? '#' + id : '');
+}
+
+function setHash(id) {
+  history.replaceState(null, '', id ? '#' + id : location.pathname + location.search);
+}
+
+function shareButton(id, what) {
+  return `<button type="button" class="share-link" onclick="event.preventDefault();event.stopPropagation();shareLink('${id}')" aria-label="Link zu ${what || 'Abschnitt'} kopieren" title="Link kopieren">&#128279; link</button>`;
+}
+
+let _toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('share-toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+async function shareLink(id) {
+  const url = linkUrl(id);
+  // Phones: native share sheet (WhatsApp, Signal, Mail …); desktop: clipboard
+  if (document.body.classList.contains('touch') && navigator.share) {
+    try { await navigator.share({ title: document.title, url }); return; }
+    catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast('link kopiert: ' + url.replace(/^https?:\/\//, ''));
+  } catch (e) {
+    window.prompt('Link kopieren:', url);
+  }
+}
+
+function goToHash(smooth) {
+  const id = resolveLinkId(decodeURIComponent(location.hash.slice(1)));
+  if (!id) return;
+  if (_photoLinks[id]) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ block: 'center' });
+    const p = _photoLinks[id];
+    openGallery(p.gdata, p.index);
+    return;
+  }
+  const el = document.getElementById(id);
+  if (!el) return;
+  const details = el.closest('details') || el.querySelector('details');
+  if (details) details.open = true;
+  el.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(r => r.classList.add('visible'));
+  el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: el.tagName === 'SECTION' ? 'start' : 'center' });
+  if (el.tagName !== 'SECTION') {
+    el.classList.remove('link-target-flash');
+    void el.offsetWidth;
+    el.classList.add('link-target-flash');
+  }
+}
+
+function initDeepLinks() {
+  // Copy-link button on every section heading
+  document.querySelectorAll('section[id] .section-title').forEach(h => {
+    const sec = h.closest('section[id]');
+    if (h.querySelector('.share-link')) return;
+    h.insertAdjacentHTML('beforeend', shareButton(sec.id === 'about' ? 'bio' : sec.id, 'diesem Abschnitt'));
+  });
+  // Keep the address bar in sync when the rider is opened
+  const rider = document.getElementById('rider-details');
+  if (rider) rider.addEventListener('toggle', () => { if (rider.open) setHash('rider'); });
+
+  if (location.hash) {
+    goToHash(false);
+    // Images above the target can still shift the layout — settle once more after load
+    let userScrolled = false;
+    const stop = () => { userScrolled = true; };
+    ['wheel', 'touchstart', 'keydown'].forEach(ev => window.addEventListener(ev, stop, { once: true, passive: true }));
+    const settle = () => {
+      if (!userScrolled && !_photoLinks[resolveLinkId(location.hash.slice(1))]) goToHash(false);
+    };
+    if (document.readyState === 'complete') setTimeout(settle, 300);
+    else window.addEventListener('load', settle, { once: true });
+  }
+  window.addEventListener('hashchange', () => goToHash(true));
+}
+
 async function loadContent() {
   const res = await fetch('content.json');
   const c = await res.json();
@@ -66,6 +182,8 @@ async function loadContent() {
         const el = document.getElementById(id);
         if (el) anchor.before(el);
       });
+      const rider = document.getElementById('rider');
+      if (anchor && rider) anchor.before(rider);
     }
     sectionOrder.forEach((id, i) => {
       const el = document.getElementById(id);
@@ -202,19 +320,22 @@ async function loadContent() {
   // Photos
   const photoGrid = document.getElementById('photos-grid');
   if (photoGrid && c.photos && c.photos.length) {
-    const gdata = encGallery(c.photos.map(p => ({ src: p.src, credit: p.credit || '' })));
+    const gallery = c.photos.map((p, i) => ({ src: p.src, credit: p.credit || '', id: 'photo-' + (i + 1) }));
+    const gdata = encGallery(gallery);
+    gallery.forEach((g, i) => registerPhotoLink(g.id, gdata, i));
     photoGrid.innerHTML = c.photos.map((p, i) =>
-      `<img src="${p.src}" alt="${p.alt}" loading="lazy" onclick="openGallery('${gdata}', ${i})" />`
+      `<img id="photo-${i + 1}" src="${p.src}" alt="${p.alt}" loading="lazy" onclick="openGallery('${gdata}', ${i})" />`
     ).join('');
   }
 
   // Releases
   const relGrid = document.getElementById('releases-grid');
   relGrid.innerHTML = c.releases.map(r => {
+    const rid = uniqueLinkId('release-' + slugify(r.title));
     if (r.description) {
       // Featured layout: cover left, text right
       return `
-        <div class="release-featured reveal">
+        <div class="release-featured reveal" id="${rid}">
           <a class="release-cover-link" href="${r.link || '#'}" target="_blank" rel="noopener">
             <div class="release-cover-wrap">
               ${r.cover
@@ -227,6 +348,7 @@ async function loadContent() {
             <div class="release-title">${r.title}</div>
             <div class="release-meta">${r.year}${r.type ? ' · ' + r.type : ''}</div>
             <p class="release-description">${r.description.replace(/\n/g, '<br>')}</p>
+            ${shareButton(rid, 'Release')}
             ${r.bandcamp_embed_id ? `<div class="bandcamp-player"><iframe style="border:0;width:100%;height:330px" src="https://bandcamp.com/EmbeddedPlayer/album=${r.bandcamp_embed_id}/size=large/bgcol=8252fe/linkcol=f5f500/tracklist=true/artwork=small/" seamless></iframe></div>` : (r.link ? `<a class="release-listen-btn" href="${r.link}" target="_blank" rel="noopener">Listen on Bandcamp ↗</a>` : '')}
           </div>
         </div>
@@ -234,7 +356,7 @@ async function loadContent() {
     }
     // Standard card
     return `
-      <a class="release-card" href="${r.link || '#'}" target="_blank" rel="noopener">
+      <a class="release-card" id="${rid}" href="${r.link || '#'}" target="_blank" rel="noopener">
         <div class="release-cover-wrap">
           ${r.cover
             ? `<img class="release-cover" src="${r.cover}" alt="${r.title}" onerror="this.outerHTML='<div class=release-cover-placeholder>${r.title}</div>'" />`
@@ -250,16 +372,22 @@ async function loadContent() {
 
   // Videos
   const vidGrid = document.getElementById('videos-grid');
-  vidGrid.innerHTML = c.videos.map(v => `
-    <div class="video-card">
+  vidGrid.innerHTML = c.videos.map(v => {
+    const vid = uniqueLinkId('video-' + slugify(v.title));
+    return `
+    <div class="video-card" id="${vid}">
       <div class="video-wrapper">
         <iframe src="https://www.youtube.com/embed/${v.youtube_id}"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen loading="lazy"></iframe>
       </div>
-      <p class="video-title">${v.title}</p>
+      <div class="video-title-row">
+        <p class="video-title">${v.title}</p>
+        ${shareButton(vid, 'Video')}
+      </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   // Shows — split by today's date regardless of which array they're stored in
   const allShows = [...(c.shows.upcoming || []), ...(c.shows.past || [])];
@@ -278,10 +406,13 @@ async function loadContent() {
       return;
     }
     el.innerHTML = shows.map(s => {
-      const gdata = encGallery((s.photos || []).map(p => ({ src: p.full || p.thumb, credit: p.credit || '' })));
+      const sid = s._linkId;
+      const gallery = (s.photos || []).map((p, pi) => ({ src: p.full || p.thumb, credit: p.credit || '', id: sid + '-photo-' + (pi + 1) }));
+      const gdata = encGallery(gallery);
+      gallery.forEach((g, gi) => registerPhotoLink(g.id, gdata, gi));
       const photoCircles = (s.photos || []).map((p, pi) => `<div class="show-photo" onclick="openGallery('${gdata}', ${pi})"><img src="${p.thumb}" alt="${s.venue} ${pi+1}" loading="lazy"></div>`).join('');
       return `
-      <div class="show-item">
+      <div class="show-item" id="${sid}">
         <div class="show-date">${formatDate(s.date)}</div>
         <div class="show-info">
           <div class="show-venue-row">
@@ -292,16 +423,20 @@ async function loadContent() {
         </div>
         <div class="show-tickets">
           ${s.tickets ? `<a href="${s.tickets}" target="_blank" rel="noopener">Tickets</a>` : ''}
+          ${shareButton(sid, 'Konzert')}
         </div>
       </div>
     `;
     }).join('');
   }
+  // Stable deep-link id per show: show-<date>-<venue>
+  allShows.forEach(s => { s._linkId = uniqueLinkId('show-' + s.date + '-' + slugify(s.venue)); });
+
   // Upcoming show photos — large images at top of Live section
-  const upcomingPhotos = upcomingShows.flatMap(s => (s.photos || []).map(p => ({ src: p.full || p.thumb, thumb: p.thumb || p.full, show: s.venue + ', ' + s.city, credit: p.credit || '' })));
+  const upcomingPhotos = upcomingShows.flatMap(s => (s.photos || []).map((p, pi) => ({ src: p.full || p.thumb, thumb: p.thumb || p.full, show: s.venue + ', ' + s.city, credit: p.credit || '', id: s._linkId + '-photo-' + (pi + 1) })));
   const upcomingPhotosEl = document.getElementById('upcoming-show-photos');
   if (upcomingPhotosEl && upcomingPhotos.length) {
-    const gdata = encGallery(upcomingPhotos.map(p => ({ src: p.src, credit: p.credit })));
+    const gdata = encGallery(upcomingPhotos.map(p => ({ src: p.src, credit: p.credit, id: p.id })));
     upcomingPhotosEl.innerHTML = `<div class="upcoming-photos-grid reveal">${
       upcomingPhotos.map((p, i) => `<img src="${p.src}" alt="${p.show}" loading="lazy" onclick="openGallery('${gdata}', ${i})" title="${p.show}" />`).join('')
     }</div>`;
@@ -422,6 +557,7 @@ function updateMarquee(name) {
 
 loadContent().then(() => {
   initReveal();
+  initDeepLinks();
 });
 
 // Cookie banner
@@ -545,12 +681,19 @@ function encGallery(arr) {
 
 let _lbGallery = [];
 let _lbIndex = 0;
+let _lbPrevHash = '';
+
+function shareLightbox() {
+  const item = _lbGallery[_lbIndex] || {};
+  if (item.id) shareLink(item.id);
+}
 
 // Open a gallery of photos starting at a given index. `encoded` comes from encGallery().
 function openGallery(encoded, index) {
   try { _lbGallery = JSON.parse(decodeURIComponent(encoded)); }
   catch (e) { _lbGallery = []; }
   _lbIndex = index || 0;
+  if (document.getElementById('lightbox').style.display !== 'flex') _lbPrevHash = _photoLinks[resolveLinkId(location.hash.slice(1))] ? '' : location.hash;
   _renderLightbox();
   document.getElementById('lightbox').style.display = 'flex';
   document.addEventListener('keydown', _lbKeyHandler);
@@ -572,6 +715,9 @@ function lightboxStep(dir) {
 function _renderLightbox() {
   const item = _lbGallery[_lbIndex] || {};
   document.getElementById('lightbox-img').src = item.src || '';
+  const shareBtn = document.getElementById('lightbox-share');
+  if (shareBtn) shareBtn.style.display = item.id ? 'block' : 'none';
+  if (item.id) setHash(item.id);
   const cap = document.getElementById('lightbox-credit');
   if (cap) {
     cap.textContent = item.credit ? '📷 ' + item.credit : '';
@@ -591,6 +737,7 @@ function _renderLightbox() {
 
 function closeLightbox() {
   document.getElementById('lightbox').style.display = 'none';
+  setHash(_lbPrevHash ? _lbPrevHash.slice(1) : '');
   document.removeEventListener('keydown', _lbKeyHandler);
 }
 

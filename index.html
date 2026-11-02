@@ -6,6 +6,13 @@
   <title id="meta-title">Krachym</title>
   <meta name="description" id="meta-description" content="Krachym – electronic pop symphony from Leipzig" />
   <link rel="canonical" href="https://krachym.de/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Krachym" />
+  <meta property="og:title" content="Krachym" />
+  <meta property="og:description" content="Krachym – electronic pop symphony from Leipzig" />
+  <meta property="og:url" content="https://krachym.de/" />
+  <meta property="og:image" content="https://krachym.de/images/artist.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
@@ -24,14 +31,14 @@
   }
   </script>
   <!-- Self-hosted fonts (same origin → no flash/swap to the brand fonts) -->
-  <link rel="preload" href="fonts/pressstart-400-latin.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="fonts/spacemono-400-latin.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="fonts/ibmplexmono-400-latin.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="fonts.css?v=1" />
+  <link rel="preload" href="fonts/sporting-700.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/sporting-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/basteleur-700.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="fonts.css?v=2" />
   <link rel="preconnect" href="https://bandcamp.com" />
   <link rel="preconnect" href="https://www.youtube.com" />
   <link rel="dns-prefetch" href="https://i.ytimg.com" />
-  <link rel="stylesheet" href="style.css?v=17" />
+  <link rel="stylesheet" href="style.css?v=18" />
   <style>
     :root {
       --text: #8252fe;
@@ -90,6 +97,7 @@
         <li><a href="#photos">Photos</a></li>
         <li><a href="#videos">Videos</a></li>
         <li><a href="#live">Live</a></li>
+        <li><a href="#rider">Rider</a></li>
         <li><a href="#imprint">Imprint</a></li>
         <li><a href="#" id="nav-shop" target="_blank" rel="noopener">Shop ↗</a></li>
       </ul>
@@ -196,6 +204,45 @@
     </div>
   </section>
 
+  <!-- STAGE RIDER -->
+  <section id="rider" class="section">
+    <div class="container rider-container">
+      <h2 class="section-title reveal">Stage Rider</h2>
+      <details class="rider-box reveal" id="rider-details">
+        <summary class="rider-summary">
+          <span class="rider-summary-label">3 channels · no backline</span>
+          <span class="rider-summary-toggle" aria-hidden="true"></span>
+        </summary>
+        <div class="rider-body">
+          <div class="rider-cols">
+            <div class="rider-col">
+              <h3 class="rider-head">Bring</h3>
+              <ul class="rider-list">
+                <li>MPC + Synth</li>
+                <li>1x Stereo Jack out</li>
+                <li>Vocal effect 1x XLR in 1x XLR out</li>
+              </ul>
+            </div>
+            <div class="rider-col">
+              <h3 class="rider-head">Need</h3>
+              <ul class="rider-list">
+                <li>2x Monitors <span class="rider-note">preferred Stereo Monitoring or playing in front of stage</span></li>
+                <li>Stereo DI</li>
+                <li>1x Keyboard Stand with wooden plate (100 x 50 cm) or high table same dimensions</li>
+                <li>1x Microphone</li>
+                <li>1x Mic Stand</li>
+              </ul>
+            </div>
+          </div>
+          <p class="rider-total">In total <strong>3 channels</strong></p>
+          <div class="rider-actions">
+            <a class="rider-btn" href="krachym-stage-rider.pdf" download>&darr; download pdf</a>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
   <!-- IMPRINT -->
   <section id="imprint" class="section section-alt">
     <div class="container imprint-container">
@@ -251,10 +298,13 @@
     <button id="lightbox-prev" onclick="event.stopPropagation();lightboxStep(-1)" aria-label="Vorheriges Foto" style="display:none;position:absolute;left:16px;top:50%;transform:translateY(-50%);align-items:center;justify-content:center;width:54px;height:54px;border:none;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;font-size:2rem;line-height:1;cursor:pointer;">&lsaquo;</button>
     <img id="lightbox-img" onclick="event.stopPropagation()" style="max-width:86vw;max-height:80vh;border-radius:4px;object-fit:contain;box-shadow:0 0 60px rgba(0,0,0,0.8);cursor:default;">
     <div id="lightbox-credit" style="display:none;color:#f5f500;font-size:0.95rem;letter-spacing:0.02em;text-align:center;max-width:90vw;"></div>
+    <button id="lightbox-share" class="share-link share-link-lb" onclick="event.stopPropagation();shareLightbox()" aria-label="Link zu diesem Foto kopieren">&#128279; link</button>
     <div id="lightbox-counter" style="display:none;color:rgba(255,255,255,0.6);font-size:0.8rem;letter-spacing:0.05em;"></div>
     <button id="lightbox-next" onclick="event.stopPropagation();lightboxStep(1)" aria-label="Nächstes Foto" style="display:none;position:absolute;right:16px;top:50%;transform:translateY(-50%);align-items:center;justify-content:center;width:54px;height:54px;border:none;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;font-size:2rem;line-height:1;cursor:pointer;">&rsaquo;</button>
   </div>
 
-  <script src="script.js?v=18"></script>
+  <div id="share-toast" class="share-toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js?v=19"></script>
 </body>
 </html>

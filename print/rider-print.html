@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Krachym — Stage Rider</title>
+<style>
+  @font-face { font-family: 'Sporting Grotesque'; font-weight: 400; src: url(../fonts/sporting-400.woff2) format('woff2'); }
+  @font-face { font-family: 'Sporting Grotesque'; font-weight: 700; src: url(../fonts/sporting-700.woff2) format('woff2'); }
+  @font-face { font-family: 'Basteleur'; font-weight: 700; src: url(../fonts/basteleur-700.woff2) format('woff2'); }
+
+  :root {
+    --red: #f40006;
+    --purple: #8252fe;
+    --yellow: #f5f500;
+    --cyan: #07fae8;
+    --black: #000;
+  }
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 210mm; height: 297mm; }
+  body {
+    font-family: 'Sporting Grotesque', Arial, sans-serif;
+    color: var(--yellow);
+    background: var(--red);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    position: relative;
+    overflow: hidden;
+  }
+  /* checkerboard strip like the site background */
+  .checker {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 16mm;
+    background:
+      conic-gradient(var(--black) 25%, transparent 0 50%, var(--black) 0 75%, transparent 0)
+      0 0 / 8mm 8mm;
+    opacity: .9;
+  }
+  .bar {
+    background: var(--purple);
+    border-bottom: 2px solid var(--black);
+    padding: 4mm 14mm;
+    display: flex; justify-content: space-between; align-items: center;
+    font-weight: 700; font-size: 9pt; letter-spacing: .12em; text-transform: lowercase;
+  }
+  .bar .star { color: var(--cyan); }
+  .page { padding: 12mm 14mm 0; }
+  h1 {
+    font-family: 'Basteleur', Georgia, serif;
+    font-weight: 700;
+    font-size: 64pt;
+    line-height: .85;
+    color: var(--purple);
+    text-shadow: 3px 3px 0 var(--black);
+  }
+  h1 .cur { color: var(--cyan); }
+  .title {
+    margin-top: 6mm;
+    font-weight: 700;
+    font-size: 26pt;
+    text-transform: uppercase;
+    letter-spacing: -.01em;
+    color: var(--yellow);
+    border-bottom: 3px solid var(--yellow);
+    padding-bottom: 3mm;
+  }
+  .title::before { content: '// '; color: var(--black); }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; margin-top: 10mm; }
+  .card {
+    background: var(--black);
+    border: 2px solid var(--yellow);
+    box-shadow: 5px 5px 0 var(--purple);
+    padding: 6mm 6mm 5mm;
+  }
+  h2 {
+    font-size: 10pt; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--cyan);
+    border-bottom: 1px solid rgba(245,245,0,.35);
+    padding-bottom: 2mm; margin-bottom: 3mm;
+  }
+  h2::before { content: '// '; color: var(--red); }
+  ul { list-style: none; }
+  li { font-size: 11.5pt; line-height: 1.35; padding: 1.8mm 0 1.8mm 5mm; position: relative; }
+  li::before { content: '▸'; position: absolute; left: 0; color: var(--red); }
+  li small { display: block; font-size: 8.5pt; color: rgba(245,245,0,.65); margin-top: .6mm; }
+  .total {
+    margin-top: 9mm;
+    background: var(--cyan);
+    color: var(--black);
+    border: 2px solid var(--black);
+    box-shadow: 5px 5px 0 var(--black);
+    padding: 5mm 6mm;
+    font-weight: 700;
+    font-size: 16pt;
+    text-transform: uppercase;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .total span { font-size: 9pt; letter-spacing: .08em; text-transform: none; font-weight: 400; }
+  .foot {
+    position: absolute; left: 14mm; right: 14mm; bottom: 22mm;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    font-size: 9pt; color: var(--yellow);
+  }
+  .foot b { color: var(--black); background: var(--yellow); padding: 1mm 2mm; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="bar">
+    <span>krachym <span class="star">★</span> electronic pop symphony <span class="star">★</span> leipzig</span>
+    <span>krachym.de/#rider</span>
+  </div>
+  <div class="page">
+    <h1>krachym<span class="cur">_</span></h1>
+    <div class="title">Stage Rider</div>
+
+    <div class="cols">
+      <div class="card">
+        <h2>Bring</h2>
+        <ul>
+          <li>MPC + Synth</li>
+          <li>1x Stereo Jack out</li>
+          <li>Vocal effect<small>1x XLR in · 1x XLR out</small></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Need</h2>
+        <ul>
+          <li>2x Monitors<small>preferred Stereo Monitoring or playing in front of stage</small></li>
+          <li>Stereo DI</li>
+          <li>1x Keyboard Stand with wooden plate (100 x 50 cm)<small>or high table, same dimensions</small></li>
+          <li>1x Microphone</li>
+          <li>1x Mic Stand</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="total">In total 3 channels <span>Stereo DI L · Stereo DI R · Vocal</span></div>
+  </div>
+
+  <div class="foot">
+    <div>Achim Kohlbär · Leipzig<br>achim.kolba@hitness.club</div>
+    <b>krachym.de</b>
+  </div>
+  <div class="checker"></div>
+</body>
+</html>
