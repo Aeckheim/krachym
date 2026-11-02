@@ -673,7 +673,29 @@
         "venue": "Felsenkeller",
         "city": "Leipzig",
         "country": "DE",
-        "tickets": ""
+        "tickets": "",
+        "photos": [
+          {
+            "full": "images/naumanns_18.jpg",
+            "thumb": "images/thumb_naumanns_18.jpg"
+          },
+          {
+            "full": "images/naumanns_19.jpg",
+            "thumb": "images/thumb_naumanns_19.jpg"
+          },
+          {
+            "full": "images/naumanns_1.jpg",
+            "thumb": "images/thumb_naumanns_1.jpg"
+          },
+          {
+            "full": "images/naumanns_3.jpg",
+            "thumb": "images/thumb_naumanns_3.jpg"
+          },
+          {
+            "full": "images/naumanns_9.jpg",
+            "thumb": "images/thumb_naumanns_9.jpg"
+          }
+        ]
       }
     ]
   },
