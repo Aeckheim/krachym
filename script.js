@@ -283,7 +283,7 @@ async function loadContent() {
     const preview = upcoming.slice(0, 2);
     const hasMore = upcoming.length > 2;
     upcomingEl.innerHTML = `
-      <div class="hero-shows-strip">
+      <div class="hero-shows-strip" style="${c.meta.nav_bg ? `background:${c.meta.nav_bg};` : ''}${c.meta.nav_color ? `color:${c.meta.nav_color};` : ''}">
         <span class="hero-shows-label">upcoming</span>
         ${preview.map(s => `
           <a href="#live" class="hero-show-item">
